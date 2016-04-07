@@ -1,0 +1,9 @@
+PREFIX ontology: <http://dbpedia.org/ontology/>
+PREFIX property: <http://dbpedia.org/property/>
+
+SELECT ?body ?activeYear ?activeYears WHERE {
+    ?body a ontology:Person.
+    OPTIONAL {?body property:activeYear ?activeYear.}
+    OPTIONAL {?body property:activeYears ?activeYears.}
+}
+LIMIT 10
