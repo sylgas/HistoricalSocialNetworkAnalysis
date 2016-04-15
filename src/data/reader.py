@@ -9,19 +9,29 @@ class DbpediaReader:
         self.sparql = SPARQLWrapper("http://dbpedia.org/sparql")
 
     @staticmethod
-    def __print_query_results(results):
-        print(len(results['results']['bindings']))
-        # for result in results["results"]["bindings"]:
-        #     print(result["label"]["value"])
+    def __print_query_results(title, results):
+        print(title + " " + len(results['results']['bindings']))
 
-    # noinspection PyDefaultArgument
-    def __read_results_from_query_resource(self, resource_name, args=[]):
+    def __read_results_from_query_resource(self, resource_name, *args):
         query = get_resource(resource_name).format(args)
-        print(query)
-
         results = self.__exec_query(query)
-        DbpediaReader.__print_query_results(results)
         return results['results']['bindings']
+
+    def __read_results_from_query_resource_batched(self, resource_name, *args):
+        result = []
+        offset = 0
+        while True:
+            args_with_offset = []
+            args_with_offset.extend(args)
+            args_with_offset.append(offset)
+            batch = self.__read_results_from_query_resource(resource_name, args_with_offset)
+            if len(batch) == 0:
+                break
+            offset += 10000
+            result.extend(batch)
+
+        DbpediaReader.__print_query_results(resource_name, result)
+        return result
 
     def __exec_query(self, query):
         self.sparql.setQuery(query)
@@ -29,18 +39,10 @@ class DbpediaReader:
         return self.sparql.query().convert()
 
     def read_raw_persons(self):
-        result = []
-        offset = 0
-        while True:
-            part = self.__read_results_from_query_resource('person_query.txt', offset)
-            if len(part) == 0:
-                break
-            offset += 10000
-            result.extend(part)
-        return result
+        return self.__read_results_from_query_resource_batched('person_query.txt')
 
     def read_raw_roles(self):
-        return self.__read_results_from_query_resource('role_query.txt')
+        return self.__read_results_from_query_resource_batched('role_query.txt')
 
     def read_raw_relations(self):
         json = []
@@ -52,12 +54,17 @@ class DbpediaReader:
         names = relation.get_relations_names()
         relations = []
         for name in names:
-            relations.extend(self.__read_results_from_query_resource('relation_query.txt', name))
+            relations.extend(self.__read_results_from_query_resource_batched('relation_query.txt', name))
         return relations
 
-    def read_raw_redirects(self):
-        return self.__create_raw_relation(Relation.OTHER.name,
-                                          self.__read_results_from_query_resource('wiki_redirect_query.txt'))
+    def read_raw_redirects(self, urls):
+        results = []
+        for url in urls:
+            result = self.__create_raw_relation(Relation.OTHER.name,
+                                                self.__read_results_from_query_resource_batched(
+                                                    'wiki_redirect_query.txt', url))
+            results.extend(result)
+        return results
 
     def __create_raw_relation(self, type, relations):
         return dict(type=type,

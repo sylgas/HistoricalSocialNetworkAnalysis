@@ -31,4 +31,4 @@ SELECT ?body ?dynasty ?surname ?familyName ?activeYearsStartDate
 	OPTIONAL {{?body ontology:stateOfOrigin ?stateOfOrigin.}}
 }}
 LIMIT 10000
-OFFSET {offset}
+OFFSET {0}

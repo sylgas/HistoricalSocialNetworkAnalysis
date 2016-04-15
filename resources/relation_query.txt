@@ -3,5 +3,7 @@ PREFIX property: <http://dbpedia.org/property/>
 
 SELECT ?body ?relation WHERE {{
     ?body a ontology:Person.
-	?body {relation} ?relation.
+	?body {0} ?relation.
 }}
+LIMIT 10000
+OFFSET {1}
