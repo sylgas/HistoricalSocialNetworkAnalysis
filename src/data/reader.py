@@ -16,7 +16,7 @@ class DbpediaReader:
 
     # noinspection PyDefaultArgument
     def __read_results_from_query_resource(self, resource_name, args=[]):
-        query = get_resource(resource_name.format(args))
+        query = get_resource(resource_name).format(args)
         print(query)
 
         results = self.__exec_query(query)
@@ -29,7 +29,15 @@ class DbpediaReader:
         return self.sparql.query().convert()
 
     def read_raw_persons(self):
-        return self.__read_results_from_query_resource('person_query.txt')
+        result = []
+        offset = 0
+        while True:
+            part = self.__read_results_from_query_resource('person_query.txt', offset)
+            if len(part) == 0:
+                break
+            offset += 10000
+            result.extend(part)
+        return result
 
     def read_raw_roles(self):
         return self.__read_results_from_query_resource('role_query.txt')

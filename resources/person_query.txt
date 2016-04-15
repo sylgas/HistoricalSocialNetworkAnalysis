@@ -1,36 +1,34 @@
 PREFIX ontology: <http://dbpedia.org/ontology/>
 PREFIX property: <http://dbpedia.org/property/>
 
-SELECT ?body ?dynasty ?surname ?familyName ?activeYear ?activeYears ?activeYearsStartDate
-		?activeYearsStartYear ?birthDate ?birthYear ?philosophicalSchool ?ideology ?activeYearsEndDate
-		?activeYearsEndYear ?dateOfBurial ?deathDate ?deathYear ?birthName ?givenName ?name ?nick
+SELECT ?body ?dynasty ?surname ?familyName ?activeYearsStartDate
+		?activeYearsStartYear ?birthDate ?birthYear ?ideology ?activeYearsEndDate
+		?activeYearsEndYear ?deathDate ?deathYear ?birthName ?givenName ?name ?nick
 		?pseudonym ?citizenship ?country ?nationality ?stateOfOrigin
-	WHERE {
+	WHERE {{
     ?body a ontology:Person.
-	OPTIONAL {?body property:activeYear ?activeYear.}
-	OPTIONAL {?body property:dynasty ?dynasty.}
-	OPTIONAL {?body property:surname ?surname.}
-	OPTIONAL {?body property:familyName ?familyName.}
-	OPTIONAL {?body property:activeYear ?activeYear.}
-	OPTIONAL {?body property:activeYears ?activeYears.}
-	OPTIONAL {?body ontology:activeYearsStartDate ?activeYearsStartDate.}
-	OPTIONAL {?body ontology:activeYearsStartYear ?activeYearsStartYear.}
-	OPTIONAL {?body ontology:birthDate ?birthDate.}
-	OPTIONAL {?body ontology:birthYear ?birthYear.}
-	OPTIONAL {?body ontology:philosophicalSchool ?philosophicalSchool.}
-	OPTIONAL {?body property:ideology ?ideology.}
-	OPTIONAL {?body ontology:activeYearsEndDate ?activeYearsEndDate.}
-	OPTIONAL {?body ontology:activeYearsEndYear ?activeYearsEndYear.}
-	OPTIONAL {?body ontology:dateOfBurial ?dateOfBurial.}
-	OPTIONAL {?body property:deathDate ?deathDate.}
-	OPTIONAL {?body property:deathYear ?deathYear.}
-	OPTIONAL {?body ontology:birthName ?birthName.}
-	OPTIONAL {?body property:givenName ?givenName.}
-	OPTIONAL {?body property:name ?name.}
-	OPTIONAL {?body property:nick ?nick.}
-	OPTIONAL {?body property:pseudonym ?pseudonym.}
-	OPTIONAL {?body ontology:citizenship ?citizenship.}
-	OPTIONAL {?body ontology:country ?country.}
-	OPTIONAL {?body ontology:nationality ?nationality.}
-	OPTIONAL {?body ontology:stateOfOrigin ?stateOfOrigin.}
-}
+	OPTIONAL {{?body property:dynasty ?dynasty.}}
+	OPTIONAL {{?body property:surname ?surname.}}
+	OPTIONAL {{?body property:familyName ?familyName.}}
+	OPTIONAL {{?body property:activeYear ?activeYear.}}
+	OPTIONAL {{?body ontology:activeYearsStartDate ?activeYearsStartDate.}}
+	OPTIONAL {{?body ontology:activeYearsStartYear ?activeYearsStartYear.}}
+	OPTIONAL {{?body ontology:birthDate ?birthDate.}}
+	OPTIONAL {{?body ontology:birthYear ?birthYear.}}
+	OPTIONAL {{?body property:ideology ?ideology.}}
+	OPTIONAL {{?body ontology:activeYearsEndDate ?activeYearsEndDate.}}
+	OPTIONAL {{?body ontology:activeYearsEndYear ?activeYearsEndYear.}}
+	OPTIONAL {{?body property:deathDate ?deathDate.}}
+	OPTIONAL {{?body property:deathYear ?deathYear.}}
+	OPTIONAL {{?body ontology:birthName ?birthName.}}
+	OPTIONAL {{?body property:givenName ?givenName.}}
+	OPTIONAL {{?body property:name ?name.}}
+	OPTIONAL {{?body property:nick ?nick.}}
+	OPTIONAL {{?body property:pseudonym ?pseudonym.}}
+	OPTIONAL {{?body ontology:citizenship ?citizenship.}}
+	OPTIONAL {{?body ontology:country ?country.}}
+	OPTIONAL {{?body ontology:nationality ?nationality.}}
+	OPTIONAL {{?body ontology:stateOfOrigin ?stateOfOrigin.}}
+}}
+LIMIT 10000
+OFFSET {offset}
