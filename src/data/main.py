@@ -3,24 +3,19 @@ from src.data.dbpedia.parser import PersonParser
 from src.data.dbpedia.reader import DbpediaReader
 
 
-def save_raw_data(db, reader):
+def save_raw_data(reader):
     print("Saving raw dbpedia data...")
 
-    json = reader.read_raw_persons()
-    db.save_raw_persons(json)
+    reader.save_raw_persons()
     print("Raw persons saved")
 
-    json = reader.read_raw_roles()
-    db.save_raw_roles(json)
+    reader.save_raw_roles()
     print('Raw roles saved')
 
-    json = reader.read_raw_relations()
-    db.save_raw_relations(json)
+    reader.save_raw_relations()
     print('Raw relations saved')
 
-    urls = db.find_distinct_urls()
-    json = reader.read_raw_redirects(urls)
-    db.update_raw_relations(json)
+    reader.save_raw_redirects()
     print('Raw relations updated with redirects')
 
     print('Finished saving raw dbpedia data')
@@ -38,9 +33,9 @@ def parse_data(db):
 def main():
     print('Starting...')
     db = DatabaseConnector('localhost', 27017, 'historical-relations')
-    reader = DbpediaReader()
+    reader = DbpediaReader(db)
 
-    save_raw_data(db, reader)
+    save_raw_data(reader)
     # parse_data(db)
 
     print('Finished')
