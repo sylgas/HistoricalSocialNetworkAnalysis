@@ -13,7 +13,7 @@ class DbpediaReader:
         print(title + " " + len(results['results']['bindings']))
 
     def __read_results_from_query_resource(self, resource_name, *args):
-        query = get_resource(resource_name).format(args)
+        query = get_resource(resource_name).format(*args)
         results = self.__exec_query(query)
         return results['results']['bindings']
 
@@ -21,10 +21,7 @@ class DbpediaReader:
         result = []
         offset = 0
         while True:
-            args_with_offset = []
-            args_with_offset.extend(args)
-            args_with_offset.append(offset)
-            batch = self.__read_results_from_query_resource(resource_name, args_with_offset)
+            batch = self.__read_results_from_query_resource(resource_name, *args, offset)
             if len(batch) == 0:
                 break
             offset += 10000
@@ -47,7 +44,8 @@ class DbpediaReader:
     def read_raw_relations(self):
         json = []
         for relation in Relation:
-            self.__create_raw_relation(relation.name, self.__read_raw_relations_for_type(relation))
+            relations = self.__read_raw_relations_for_type(relation)
+            json.append(self.__create_raw_relation(relation.name, relations))
         return json
 
     def __read_raw_relations_for_type(self, relation):
@@ -67,5 +65,4 @@ class DbpediaReader:
         return results
 
     def __create_raw_relation(self, type, relations):
-        return dict(type=type,
-                    relations=relations)
+        return dict(type=type, relations=relations)

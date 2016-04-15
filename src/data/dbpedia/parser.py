@@ -22,6 +22,13 @@ class PersonParser:
             relations=self.__parse_relations(raw_relations, raw_redirects)
         )
 
+    @staticmethod
+    def __extract_first_attribute_value(collection, *attributes):
+        for element in collection:
+            for attribute in attributes:
+                if attribute in element:
+                    return element[attribute]
+
     def _parse_url(self, raw_persons):
         pass
 
@@ -32,7 +39,7 @@ class PersonParser:
         pass
 
     def __parse_dynasty(self, raw_persons):
-        pass
+        PersonParser.__extract_first_attribute_value(raw_persons, ['dynasty', 'familyName', 'surname'])
 
     def __parse_first_year_of_activity(self, raw_persons):
         pass

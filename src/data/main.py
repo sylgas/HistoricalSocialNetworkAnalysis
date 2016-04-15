@@ -1,4 +1,4 @@
-from src.data.db.connector import DatabaseConnector
+from src.common.db.connector import DatabaseConnector
 from src.data.dbpedia.parser import PersonParser
 from src.data.dbpedia.reader import DbpediaReader
 
