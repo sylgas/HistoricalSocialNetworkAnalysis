@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from pymongo.errors import DuplicateKeyError
 
 
 class DatabaseConnector:
@@ -9,4 +10,10 @@ class DatabaseConnector:
         self.ensure_indexes()
 
     def ensure_indexes(self):
-        self.persons.ensure_index('id', unique=True)
+        self.persons.ensure_index('url', unique=True)
+
+    def save_persons(self, persons):
+        try:
+            self.persons.insert_many(persons)
+        except DuplicateKeyError as e:
+            print("Tried to insert person duplicate. Should not happen!\n" + str(e))
