@@ -1,0 +1,11 @@
+PREFIX ontology: <http://dbpedia.org/ontology/>
+PREFIX property: <http://dbpedia.org/property/>
+
+SELECT ?body ?profession ?occupation ?discipline ?speciality
+	WHERE {
+    ?body a ontology:Person.
+	OPTIONAL {?body ontology:discipline ?discipline.}
+	OPTIONAL {?body ontology:occupation ?occupation.}
+	OPTIONAL {?body property:profession ?profession.}
+	OPTIONAL {?body property:speciality ?speciality.}
+}
