@@ -1,7 +1,6 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 from src import get_resource
-from src.data.parser import PersonParser
 
 
 class DbpediaReader:
@@ -14,16 +13,17 @@ class DbpediaReader:
         # for result in results["results"]["bindings"]:
         #     print(result["label"]["value"])
 
-    def read_persons(self):
+    @staticmethod
+    def __read_results(results):
+        return results['results']['bindings']
+
+    def read_raw_persons(self):
         query = get_resource('person_query.txt')
         print(query)
 
         results = self.__exec_query(query)
         DbpediaReader.__print_query_results(results)
-
-        parser = PersonParser()
-        persons = parser.parse_persons_from(results)
-        return persons
+        return DbpediaReader.__read_results(results)
 
     def __exec_query(self, query):
         self.sparql.setQuery(query)
