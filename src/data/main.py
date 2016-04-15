@@ -1,10 +1,10 @@
-from src.data.parser import PersonParser
-from src.data.reader import DbpediaReader
-from src.db.connector import DatabaseConnector
+from src.data.db.connector import DatabaseConnector
+from src.data.dbpedia.parser import PersonParser
+from src.data.dbpedia.reader import DbpediaReader
 
 
 def save_raw_data(db, reader):
-    print("Saving raw data...")
+    print("Saving raw dbpedia data...")
 
     json = reader.read_raw_persons()
     db.save_raw_persons(json)
@@ -23,7 +23,7 @@ def save_raw_data(db, reader):
     db.update_raw_relations(json)
     print('Raw relations updated with redirects')
 
-    print('Finished saving raw data')
+    print('Finished saving raw dbpedia data')
 
 
 def parse_data(db):
