@@ -1,0 +1,5 @@
+PREFIX ontology: <http://dbpedia.org/ontology/>
+
+SELECT DISTINCT * WHERE {{
+  ?redirect ontology:wikiPageRedirects {resource_url}
+}}

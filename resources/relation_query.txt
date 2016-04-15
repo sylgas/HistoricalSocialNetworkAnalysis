@@ -1,0 +1,7 @@
+PREFIX ontology: <http://dbpedia.org/ontology/>
+PREFIX property: <http://dbpedia.org/property/>
+
+SELECT ?body ?relation WHERE {{
+    ?body a ontology:Person.
+	?body {relation} ?relation.
+}}
