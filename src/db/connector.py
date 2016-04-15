@@ -10,6 +10,7 @@ class DatabaseConnector:
         self.raw_persons = db.raw_persons
         self.raw_roles = db.raw_roles
         self.raw_relations = db.raw_relations
+        self.raw_redirects = db.raw_redirects
         self.ensure_indexes()
 
     def ensure_indexes(self):
@@ -18,9 +19,9 @@ class DatabaseConnector:
     def find_distinct_urls(self):
         return self.raw_persons.distinct('body.value')
 
-    def save_persons(self, persons):
+    def save_person(self, person):
         try:
-            self.persons.insert_many(persons)
+            self.persons.insert_one(person)
         except DuplicateKeyError as e:
             print("Tried to insert person duplicate. Should not happen!\n" + str(e))
 
@@ -42,6 +43,12 @@ class DatabaseConnector:
         except DuplicateKeyError as e:
             print("Tried to insert relation duplicate. Should not happen!\n" + str(e))
 
+    def save_raw_redirects(self, json):
+        try:
+            self.raw_redirects.insert_many(json)
+        except DuplicateKeyError as e:
+            print("Tried to insert relation duplicate. Should not happen!\n" + str(e))
+
     def find_raw_persons_for(self, url):
         return self.raw_persons.find({'body.value': url})
 
@@ -50,3 +57,6 @@ class DatabaseConnector:
 
     def find_raw_relations_for(self, url):
         return self.raw_relations.find({'body.value': url})
+
+    def find_raw_redirects_for(self, url):
+        return self.raw_redirects.find({'body.value': url})

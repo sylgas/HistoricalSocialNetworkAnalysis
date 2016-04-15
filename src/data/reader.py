@@ -34,3 +34,6 @@ class DbpediaReader:
 
     def read_raw_relations(self):
         return self.__read_results('relation_query.txt')
+
+    def read_raw_redirects(self):
+        return self.__read_results('wiki_redirect_query.txt')

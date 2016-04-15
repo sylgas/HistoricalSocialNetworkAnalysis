@@ -13,6 +13,9 @@ def save_raw_data(db, reader):
     json = reader.read_raw_relations()
     db.save_raw_relations(json)
 
+    json = reader.read_raw_redirects()
+    db.save_raw_redirects(json)
+
 
 def main():
     db = DatabaseConnector('localhost', 27017, 'historical-relations')
@@ -21,7 +24,7 @@ def main():
     save_raw_data(db, reader)
 
     parser = PersonParser()
-    persons = parser.parse_persons(db)
+    parser.parse_and_save_persons(db)
 
 
 if __name__ == '__main__':
