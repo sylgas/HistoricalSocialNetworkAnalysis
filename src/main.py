@@ -14,7 +14,7 @@ def save_raw_data(db, reader):
     db.save_raw_relations(json)
 
     json = reader.read_raw_redirects()
-    db.save_raw_redirects(json)
+    db.update_raw_relations(json)
 
 
 def main():
@@ -24,7 +24,7 @@ def main():
     save_raw_data(db, reader)
 
     parser = PersonParser()
-    parser.parse_and_save_persons(db)
+    # parser.parse_and_save_persons(db)
 
 
 if __name__ == '__main__':

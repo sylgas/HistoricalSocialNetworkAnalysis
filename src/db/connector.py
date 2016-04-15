@@ -1,6 +1,8 @@
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
 
+from src.common.enums import Relation
+
 
 class DatabaseConnector:
     def __init__(self, host, port, name):
@@ -43,9 +45,9 @@ class DatabaseConnector:
         except DuplicateKeyError as e:
             print("Tried to insert relation duplicate. Should not happen!\n" + str(e))
 
-    def save_raw_redirects(self, json):
+    def update_raw_relations(self, json):
         try:
-            self.raw_redirects.insert_many(json)
+            self.raw_redirects.update({'type': Relation.OTHER.name}, json)
         except DuplicateKeyError as e:
             print("Tried to insert relation duplicate. Should not happen!\n" + str(e))
 
