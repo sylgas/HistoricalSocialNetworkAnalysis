@@ -19,7 +19,8 @@ class DatabaseConnector:
         self.persons.ensure_index('url', unique=True)
 
     def find_distinct_urls(self):
-        return self.raw_persons.distinct('body.value')
+        return [elem['_id'] for elem in
+                list(self.raw_persons.aggregate([{'$group': {'_id': '$body.value'}}], allowDiskUse=True))]
 
     def save_person(self, person):
         try:
@@ -41,7 +42,7 @@ class DatabaseConnector:
 
     def save_raw_relations(self, json):
         try:
-            self.raw_relations.insert_many(json)
+            self.raw_relations.insert_one(json)
         except DuplicateKeyError as e:
             print("Tried to insert relation duplicate. Should not happen!\n" + str(e))
 

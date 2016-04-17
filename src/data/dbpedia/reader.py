@@ -48,12 +48,17 @@ class DbpediaReader:
         names = relation.get_relations_names()
         for name in names:
             self.__save_results_from_query_resource_batched(
-                lambda data: self.db.save_raw_relations(dict(type=relation.name, relations=data)),
+                lambda data: self.db.save_raw_relations(DbpediaReader.__create_relation_dict(relation.name, data)),
                 'relation_query.txt', name)
 
     def save_raw_redirects(self):
         urls = self.db.find_distinct_urls()
         for url in urls:
             self.__save_results_from_query_resource_batched(
-                lambda data: self.db.update_raw_relations(dict(type=Relation.OTHER.name, relations=data)),
+                lambda data: self.db.update_raw_relations(
+                    DbpediaReader.__create_relation_dict(Relation.OTHER.name, data)),
                 'wiki_redirect_query.txt', url)
+
+    @staticmethod
+    def __create_relation_dict(name, relations):
+        return dict(type=name, relations=relations)
