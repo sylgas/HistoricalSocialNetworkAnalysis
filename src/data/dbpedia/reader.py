@@ -57,8 +57,3 @@ class DbpediaReader:
             self.__save_results_from_query_resource_batched(
                 lambda data: self.db.update_raw_relations(dict(type=Relation.OTHER.name, relations=data)),
                 'wiki_redirect_query.txt', url)
-
-    @staticmethod
-    def __create_raw_relation(type, relations):
-        return dict(type=type,
-                    relations=relations)

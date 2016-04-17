@@ -1,4 +1,11 @@
+import re
+
+
 class PersonParser:
+    RESOURCE_REGEXES = [r'http://dbpedia\.org/resource/(?P<value>[^\(\)]*)(\(.*\))*',
+                        r'"“*(?P<value>.*[^“”"])”*"@.+',
+                        r'(?P<value>.*)']
+
     def parse_and_save_persons(self, db):
         urls = db.find_distinct_urls()
         for url in urls:
@@ -28,6 +35,15 @@ class PersonParser:
             for attribute in attributes:
                 if attribute in element:
                     return element[attribute]
+
+    def __extract_string_value(self, value):
+        expression = value.strip()
+        for regex in PersonParser.RESOURCE_REGEXES:
+            pattern = re.compile(regex)
+            match = pattern.search(expression)
+            if match:
+                result = match.group('value')
+                return result.replace('_', ' ').strip()
 
     def _parse_url(self, raw_persons):
         pass
