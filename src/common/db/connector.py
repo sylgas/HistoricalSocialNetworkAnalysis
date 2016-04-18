@@ -22,7 +22,7 @@ class DatabaseConnector:
         return [elem['_id'] for elem in
                 list(self.raw_persons.aggregate([{'$group': {'_id': '$body.value'}}], allowDiskUse=True))]
 
-    def save_person(self, person):
+    def insert_person(self, person):
         try:
             self.persons.insert_one(person)
         except DuplicateKeyError as e:
@@ -56,8 +56,8 @@ class DatabaseConnector:
     def find_raw_persons_for(self, url):
         return self.raw_persons.find({'body.value': url})
 
-    def find_raw_roles_for(self, url):
-        return self.raw_roles.find({'body.value': url})
+    def find_all_raw_roles(self):
+        return self.raw_roles.find()
 
     def find_raw_relations_for(self, url):
         return self.raw_relations.find({'body.value': url})
@@ -70,5 +70,11 @@ class DatabaseConnector:
             {'$or': [{'$and': [{'firstYearOfActivity': {'$gte': since}}, {'firstYearOfActivity': {'$lte': to}}]},
                      {'$and': [{'lastYearOfActivity': {'$gte': since}}, {'lastYearOfActivity': {'$lte': to}}]}]})
 
-    def find_all_raw_persons(self):
-        return self.raw_persons.find()
+    def find_all_persons(self):
+        return self.persons.find()
+
+    def find_one_person(self, query={}):
+        return self.persons.find_one(query)
+
+    def save_person(self, person):
+        self.persons.save(person)

@@ -1,6 +1,6 @@
 from src.common.db.connector import DatabaseConnector
 from src.data.dbpedia.cleaner import DatePersonCleaner
-from src.data.dbpedia.parser import PersonParser
+from src.data.dbpedia.parser import RoleParser
 from src.data.dbpedia.reader import DbpediaReader
 
 
@@ -25,8 +25,11 @@ def save_raw_data(reader):
 def parse_data(db):
     print('Parsing data...')
 
-    parser = PersonParser()
-    parser.parse_and_save_persons(db)
+    # parser = PersonParser(db)
+    # parser.parse()
+
+    parser = RoleParser(db)
+    parser.parse()
 
     print('Finished parsing data')
 
@@ -46,8 +49,8 @@ def main():
     reader = DbpediaReader(db)
 
     # save_raw_data(reader)
-    # parse_data(db)
-    clean_data(db)
+    parse_data(db)
+    # clean_data(db)
 
     print('Finished')
 
