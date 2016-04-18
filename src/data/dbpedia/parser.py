@@ -13,12 +13,12 @@ class PersonParser:
             raw_roles = db.find_raw_roles_for(url)
             raw_relations = db.find_raw_relations_for(url)
             raw_redirects = db.find_raw_redirects_for(url)
-            person = self.__parse_person_from(raw_persons, raw_roles, raw_relations, raw_redirects)
+            person = self.__parse_person_from(url, raw_persons, raw_roles, raw_relations, raw_redirects)
             db.save_person(person)
 
-    def __parse_person_from(self, raw_persons, raw_roles, raw_relations, raw_redirects):
+    def __parse_person_from(self, url, raw_persons, raw_roles, raw_relations, raw_redirects):
         return dict(
-            url=self._parse_url(raw_persons),
+            url=url,
             name=self.__parse_name(raw_persons),
             role=self.__parse_role(raw_roles),
             dynasty=self.__parse_dynasty(raw_persons),
@@ -30,13 +30,24 @@ class PersonParser:
         )
 
     @staticmethod
+    def __extract_first_attribute_string_value(collection, *attributes):
+        return PersonParser.__extract_string_value(
+            PersonParser.__extract_first_attribute_value(collection, *attributes))
+
+    @staticmethod
+    def __extract_date_value(collection, *attributes):
+        return PersonParser.__parse_date(PersonParser.__extract_first_attribute_value(collection, *attributes))
+
+    @staticmethod
     def __extract_first_attribute_value(collection, *attributes):
         for element in collection:
             for attribute in attributes:
                 if attribute in element:
-                    return element[attribute]
+                    return element[attribute]['value']
+        return ''
 
-    def __extract_string_value(self, value):
+    @staticmethod
+    def __extract_string_value(value):
         expression = value.strip()
         for regex in PersonParser.RESOURCE_REGEXES:
             pattern = re.compile(regex)
@@ -45,28 +56,45 @@ class PersonParser:
                 result = match.group('value')
                 return result.replace('_', ' ').strip()
 
-    def _parse_url(self, raw_persons):
-        pass
+    @staticmethod
+    def __parse_date(date_string):
+        if "\"" in date_string:
+            return date_string[1:5]
+        else:
+            return date_string[:4]
 
-    def __parse_name(self, raw_persons):
-        pass
+    @staticmethod
+    def __parse_name(raw_persons):
+        return PersonParser.__extract_first_attribute_string_value(raw_persons, 'birthName', 'name', 'pseudonym',
+                                                                   'givenName', 'nick')
 
+    @staticmethod
+    def __parse_dynasty(raw_persons):
+        return PersonParser.__extract_first_attribute_string_value(raw_persons, 'dynasty', 'familyName', 'surname')
+
+    @staticmethod
+    def __parse_first_year_of_activity(raw_persons):
+        return PersonParser.__parse_date(
+            PersonParser.__extract_first_attribute_value(raw_persons, 'activeYearsStartYear', 'activeYearsStartDate',
+                                                         'birthYear', 'birthDate'))
+
+    @staticmethod
+    def __parse_last_year_of_activity(raw_persons):
+        return PersonParser.__parse_date(
+            PersonParser.__extract_first_attribute_value(raw_persons, 'activeYearsEndYear', 'activeYearsEndDate',
+                                                         'deathYear', 'deathDate'))
+
+    @staticmethod
+    def __parse_ideology(raw_persons):
+        return PersonParser.__extract_first_attribute_string_value(raw_persons, 'ideology')
+
+    @staticmethod
+    def __parse_nationality(raw_persons):
+        return PersonParser.__extract_first_attribute_string_value(raw_persons, 'nationality', 'citizenship', 'country',
+                                                                   'stateOfOrigin')
+
+    # todo:
     def __parse_role(self, raw_roles):
-        pass
-
-    def __parse_dynasty(self, raw_persons):
-        PersonParser.__extract_first_attribute_value(raw_persons, ['dynasty', 'familyName', 'surname'])
-
-    def __parse_first_year_of_activity(self, raw_persons):
-        pass
-
-    def __parse_last_year_of_activity(self, raw_persons):
-        pass
-
-    def __parse_ideology(self, raw_persons):
-        pass
-
-    def __parse_nationality(self, raw_persons):
         pass
 
     def __parse_relations(self, raw_relations, raw_redirects):
