@@ -26,7 +26,8 @@ class DatabaseConnector:
         try:
             self.persons.insert_one(person)
         except DuplicateKeyError as e:
-            print("Tried to insert person duplicate. Should not happen!\n" + str(e))
+            # print("Tried to insert person duplicate. Should not happen!\n" + str(e))
+            pass
 
     def save_raw_persons(self, json):
         try:
@@ -68,3 +69,6 @@ class DatabaseConnector:
         return self.persons.find(
             {'$or': [{'$and': [{'firstYearOfActivity': {'$gte': since}}, {'firstYearOfActivity': {'$lte': to}}]},
                      {'$and': [{'lastYearOfActivity': {'$gte': since}}, {'lastYearOfActivity': {'$lte': to}}]}]})
+
+    def find_all_raw_persons(self):
+        return self.raw_persons.find()

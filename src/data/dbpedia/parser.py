@@ -7,26 +7,20 @@ class PersonParser:
                         r'(?P<value>.*)']
 
     def parse_and_save_persons(self, db):
-        urls = db.find_distinct_urls()
-        for url in urls:
-            raw_persons = db.find_raw_persons_for(url)
-            raw_roles = db.find_raw_roles_for(url)
-            raw_relations = db.find_raw_relations_for(url)
-            raw_redirects = db.find_raw_redirects_for(url)
-            person = self.__parse_person_from(url, raw_persons, raw_roles, raw_relations, raw_redirects)
+        cursor = db.find_all_raw_persons()
+        for raw_person in cursor:
+            person = self.__parse_person_from(raw_person)
             db.save_person(person)
 
-    def __parse_person_from(self, url, raw_persons, raw_roles, raw_relations, raw_redirects):
+    def __parse_person_from(self, raw_person):
         return dict(
-            url=url,
-            name=self.__parse_name(raw_persons),
-            role=self.__parse_role(raw_roles),
-            dynasty=self.__parse_dynasty(raw_persons),
-            firstYearOfActivity=self.__parse_first_year_of_activity(raw_persons),
-            lastYearOfActivity=self.__parse_last_year_of_activity(raw_persons),
-            ideology=self.__parse_ideology(raw_persons),
-            nationality=self.__parse_nationality(raw_persons),
-            relations=self.__parse_relations(raw_relations, raw_redirects)
+            url=self.__parse_url(raw_person),
+            name=self.__parse_name(raw_person),
+            dynasty=self.__parse_dynasty(raw_person),
+            firstYearOfActivity=self.__parse_first_year_of_activity(raw_person),
+            lastYearOfActivity=self.__parse_last_year_of_activity(raw_person),
+            ideology=self.__parse_ideology(raw_person),
+            nationality=self.__parse_nationality(raw_person),
         )
 
     @staticmethod
@@ -39,11 +33,10 @@ class PersonParser:
         return PersonParser.__parse_date(PersonParser.__extract_first_attribute_value(collection, *attributes))
 
     @staticmethod
-    def __extract_first_attribute_value(collection, *attributes):
-        for element in collection:
-            for attribute in attributes:
-                if attribute in element:
-                    return element[attribute]['value']
+    def __extract_first_attribute_value(element, *attributes):
+        for attribute in attributes:
+            if attribute in element:
+                return element[attribute]['value']
         return ''
 
     @staticmethod
@@ -93,9 +86,6 @@ class PersonParser:
         return PersonParser.__extract_first_attribute_string_value(raw_persons, 'nationality', 'citizenship', 'country',
                                                                    'stateOfOrigin')
 
-    # todo:
-    def __parse_role(self, raw_roles):
-        pass
-
-    def __parse_relations(self, raw_relations, raw_redirects):
-        pass
+    @staticmethod
+    def __parse_url(raw_person):
+        return raw_person['body']['value']
