@@ -4,8 +4,10 @@ from src.data.dbpedia.parser import RoleParser, PersonParser
 from src.data.dbpedia.reader import DbpediaReader
 
 
-def save_raw_data(reader):
+def save_raw_data(db):
     print("Saving raw dbpedia data...")
+
+    reader = DbpediaReader(db)
 
     # reader.save_raw_persons()
     # print("Raw persons saved")
@@ -46,9 +48,8 @@ def clean_data(db):
 def main():
     print('Starting...')
     db = DatabaseConnector('localhost', 27017, 'historical-relations')
-    reader = DbpediaReader(db)
 
-    save_raw_data(reader)
+    # save_raw_data(db)
     # parse_data(db)
     # clean_data(db)
 

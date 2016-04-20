@@ -61,6 +61,9 @@ class DatabaseConnector:
     def find_all_persons(self, query={}):
         return self.persons.find(query)
 
+    def find_all_raw_persons(self, query={}):
+        return self.raw_persons.find(query)
+
     def count_all_persons(self, query={}):
         return self.persons.count(query)
 

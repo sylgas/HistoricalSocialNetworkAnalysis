@@ -1,3 +1,4 @@
+import datetime
 import re
 
 
@@ -5,6 +6,11 @@ class Parser(object):
     RESOURCE_REGEXES = [r'http://dbpedia\.org/resource/(?P<value>[^\(\)]*)(\(.*\))*',
                         r'"“*(?P<value>.*[^“”"])”*"@.+',
                         r'(?P<value>.*)']
+
+    @staticmethod
+    def regex_match(regex, expression):
+        pattern = re.compile(regex, re.IGNORECASE)
+        return pattern.search(expression)
 
     @staticmethod
     def extract_first_attribute_string_value(collection, *attributes):
@@ -22,8 +28,7 @@ class Parser(object):
     def __extract_string_value(value):
         expression = value.strip()
         for regex in Parser.RESOURCE_REGEXES:
-            pattern = re.compile(regex)
-            match = pattern.search(expression)
+            match = Parser.regex_match(regex, expression)
             if match:
                 result = match.group('value')
                 return result.replace('_', ' ').strip()
@@ -36,6 +41,9 @@ class Parser(object):
 
 
 class PersonParser(Parser):
+    YEAR_REGEXES = [r'.*(?P<year>[0-9]{4}).*', r'(?P<year>[0-9]+)']
+    LIVING_REGEXES = [r'ALIVE', r'not dead', r'Living']
+
     def parse(self):
         cursor = self.db.find_all_raw_persons()
         for raw_person in cursor:
@@ -59,14 +67,26 @@ class PersonParser(Parser):
 
     @staticmethod
     def __parse_date(date_string):
-        if "\"" in date_string:
-            return date_string[1:5]
-        else:
-            return date_string[:4]
+        for regex in PersonParser.YEAR_REGEXES:
+            match = Parser.regex_match(regex, date_string)
+            if match:
+                return int(match.group('year'))
+
+        for regex in PersonParser.LIVING_REGEXES:
+            if Parser.regex_match(regex, date_string):
+                return int(datetime.date.today().year)
+
+        raise ValueError
 
     @staticmethod
-    def __extract_date_value(collection, *attributes):
-        return PersonParser.__parse_date(Parser.extract_first_attribute_value(collection, *attributes))
+    def __extract_date_value(element, *attributes):
+        for attribute in attributes:
+            if attribute in element:
+                try:
+                    return PersonParser.__parse_date(element[attribute]['value'])
+                except ValueError:
+                    continue
+        return ''
 
     def __parse_name(self, raw_persons):
         return self.extract_first_attribute_string_value(raw_persons, 'birthName', 'name', 'pseudonym',
