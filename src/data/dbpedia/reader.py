@@ -12,6 +12,7 @@ class DbpediaReader:
     @staticmethod
     def __print_query_results(title, results):
         print(title + " " + str(len(results)))
+        pass
 
     def __read_results_from_query_resource(self, resource_name, *args):
         query = get_resource(resource_name).format(*args)
@@ -22,12 +23,12 @@ class DbpediaReader:
         offset = 0
         while True:
             batch = self.__read_results_from_query_resource(resource_name, *args, offset)
-            if len(batch) == 0:
-                break
             save_method(batch)
-            offset += 10000
-            print(offset)
             DbpediaReader.__print_query_results(resource_name, batch)
+
+            if len(batch) < 10000:
+                break
+            offset += 10000
 
     def __exec_query(self, query):
         self.sparql.setQuery(query)
@@ -52,13 +53,11 @@ class DbpediaReader:
                 'relation_query.txt', name)
 
     def save_raw_redirects(self):
-        urls = self.db.find_distinct_urls()
-        for url in urls:
-            self.__save_results_from_query_resource_batched(
-                lambda data: self.db.update_raw_relations(
-                    DbpediaReader.__create_relation_dict(Relation.OTHER.name, data)),
-                'wiki_redirect_query.txt', url)
+        self.__save_results_from_query_resource_batched(
+            lambda data: self.db.save_raw_relations(DbpediaReader.__create_relation_dict(Relation.OTHER.name, data)),
+            'wiki_redirect_query.txt')
 
     @staticmethod
     def __create_relation_dict(name, relations):
+        # print(relations)
         return dict(type=name, relations=relations)
