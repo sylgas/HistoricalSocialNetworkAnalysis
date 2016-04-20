@@ -1,6 +1,6 @@
 from src.common.db.connector import DatabaseConnector
 from src.data.dbpedia.cleaner import DatePersonCleaner
-from src.data.dbpedia.parser import RoleParser
+from src.data.dbpedia.parser import RoleParser, RelationParser
 from src.data.dbpedia.reader import DbpediaReader
 
 
@@ -28,7 +28,8 @@ def parse_data(db):
     # parser = PersonParser(db)
     # parser.parse()
 
-    parser = RoleParser(db)
+    # parser = RoleParser(db)
+    parser = RelationParser(db)
     parser.parse()
 
     print('Finished parsing data')
