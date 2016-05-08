@@ -10,8 +10,8 @@ class DbpediaReader:
         self.sparql = SPARQLWrapper("http://dbpedia.org/sparql")
 
     @staticmethod
-    def __print_query_results(title, results):
-        print(title + " " + str(len(results)))
+    def __print_query_results(title, offset):
+        print(title + " " + str(offset))
         pass
 
     def __read_results_from_query_resource(self, resource_name, *args):
@@ -20,11 +20,11 @@ class DbpediaReader:
         return results['results']['bindings']
 
     def __save_results_from_query_resource_batched(self, save_method, resource_name, *args):
-        offset = 0
+        offset = 1450000
         while True:
             batch = self.__read_results_from_query_resource(resource_name, *args, offset)
             save_method(batch)
-            DbpediaReader.__print_query_results(resource_name, batch)
+            DbpediaReader.__print_query_results(resource_name, offset)
 
             if len(batch) < 10000:
                 break

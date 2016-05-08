@@ -1,4 +1,6 @@
-from src.common.enums import Relation, Type
+from src.common.enums import Type
+from src.analysis.printer import FunctionPrinter
+from src.common.enums import Relation
 
 
 class Statistics:
@@ -6,25 +8,26 @@ class Statistics:
         self.db = db
 
     def print_all(self):
-        self.print_statistic(self.count_persons)
-        self.print_statistic(self.count_persons_with_name)
-        self.print_statistic(self.count_persons_with_dynasty)
-        self.print_statistic(self.count_persons_with_ideology)
-        self.print_statistic(self.count_persons_with_nationality)
-        self.print_statistic(self.count_persons_with_role)
+        FunctionPrinter.print_statistic(self.count_persons)
+        FunctionPrinter.print_statistic(self.count_persons_with_name)
+        FunctionPrinter.print_statistic(self.count_persons_with_dynasty)
+        FunctionPrinter.print_statistic(self.count_persons_with_ideology)
+        FunctionPrinter.print_statistic(self.count_persons_with_nationality)
+        FunctionPrinter.print_statistic(self.count_persons_with_role)
         self.print_count_persons_by_type_statistic()
-        self.print_statistic(self.count_relations)
+        FunctionPrinter.print_statistic(self.count_persons_with_relations)
+        FunctionPrinter.print_statistic(self.count_relations)
         self.print_count_relations_by_type_statistic()
-        self.print_statistic(self.count_incorrect_persons)
+        FunctionPrinter.print_statistic(self.count_incorrect_persons)
 
     def print_count_persons_by_type_statistic(self):
         person_types = self.db.find_distinct_person_types()
         for person_type in person_types:
-            self.print_statistic(self.count_persons_by_type, person_type)
+            FunctionPrinter.print_statistic(self.count_persons_by_type, person_type)
 
     def print_count_relations_by_type_statistic(self):
         for relation_type in Relation:
-            self.print_statistic(self.count_relations_by_type, relation_type.name)
+            FunctionPrinter.print_statistic(self.count_relations_by_type, relation_type.name)
 
     @staticmethod
     def print_statistic(fun, *attributes):
@@ -60,6 +63,9 @@ class Statistics:
 
     def count_persons_with_role(self):
         return self.db.count_all_persons({'role': {'$ne': ''}})
+
+    def count_persons_with_relations(self):
+        return self.db.count_all_persons({'hasRelation': True})
 
     def count_incorrect_persons(self):
         res = self.db.count_all_persons({'$or': [

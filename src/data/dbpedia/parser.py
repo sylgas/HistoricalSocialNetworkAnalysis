@@ -160,6 +160,16 @@ class RedirectParser(RelationParser):
                         self.db.insert_relation(relation)
 
 
+class HasRelationParser(Parser):
+    def parse(self):
+        relations = self.db.find_all_relations()
+        for relation in relations:
+            self.db.update_persons(
+                {'$or': [{'url': relation['to']}, {'url': relation['from']}]},
+                {'hasRelation', True}
+            )
+
+
 class TypeParser(Parser):
     def parse(self):
         cursor = self.db.find_all_persons()
