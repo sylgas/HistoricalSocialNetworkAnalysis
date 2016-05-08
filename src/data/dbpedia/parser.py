@@ -130,7 +130,7 @@ class RoleParser(Parser):
 
 class RelationParser(Parser):
     def parse(self):
-        cursor = self.db.find_raw_relations()
+        cursor = self.db.find_all_raw_relations()
         for raw_relation_group in cursor:
             for raw_relation in raw_relation_group['relations']:
                 relation = self.__parse_relation_from(raw_relation_group['type'], raw_relation)

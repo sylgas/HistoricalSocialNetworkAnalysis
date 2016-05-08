@@ -35,35 +35,35 @@ class DatabaseConnector:
             # print("Tried to insert relation duplicate. Should not happen!\n" + str(e))
             pass
 
-    def save_raw_persons(self, json):
+    def insert_raw_persons(self, json):
         try:
             self.raw_persons.insert_many(json)
         except DuplicateKeyError as e:
             print("Tried to insert raw_person duplicate. Should not happen!\n" + str(e))
 
-    def save_raw_roles(self, json):
+    def insert_raw_roles(self, json):
         try:
             self.raw_roles.insert_many(json)
         except DuplicateKeyError as e:
             print("Tried to insert role duplicate. Should not happen!\n" + str(e))
 
-    def save_raw_relations(self, json):
+    def insert_raw_relations(self, json):
         try:
             self.raw_relations.insert_one(json)
         except DuplicateKeyError as e:
             print("Tried to insert relation duplicate. Should not happen!\n" + str(e))
 
-    def find_raw_persons_for(self, url):
-        return self.raw_persons.find({'body.value': url})
-
     def find_all_raw_roles(self):
         return self.raw_roles.find()
 
-    def find_raw_relations(self):
+    def find_all_raw_relations(self):
         return self.raw_relations.find()
 
     def find_raw_relations_for(self, url):
         return self.raw_relations.find({'body.value': url})
+
+    def find_raw_persons_for(self, url):
+        return self.raw_persons.find({'body.value': url})
 
     def find_persons_in_period(self, since, to):
         return self.persons.find(
@@ -78,6 +78,9 @@ class DatabaseConnector:
 
     def count_all_persons(self, query={}):
         return self.persons.count(query)
+
+    def count_all_relations(self, query={}):
+        return self.relations.count(query)
 
     def find_one_person(self, query={}):
         return self.persons.find_one(query)
