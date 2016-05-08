@@ -35,26 +35,26 @@ class DbpediaReader:
         self.sparql.setReturnFormat(JSON)
         return self.sparql.query().convert()
 
-    def __save_raw_relations_for_type(self, relation):
-        names = relation.get_relations_names()
-        for name in names:
-            self.__save_results_from_query_resource_batched(
-                lambda data: self.db.save_raw_relations(DbpediaReader.__create_relation_dict(relation.name, data)),
-                'relation_query.txt', name)
-
     def save_raw_persons(self):
-        return self.__save_results_from_query_resource_batched(self.db.save_raw_persons, 'person_query.txt')
+        return self.__save_results_from_query_resource_batched(self.db.insert_raw_persons, 'person_query.txt')
 
     def save_raw_roles(self):
-        return self.__save_results_from_query_resource_batched(self.db.save_raw_roles, 'role_query.txt')
+        return self.__save_results_from_query_resource_batched(self.db.insert_raw_roles, 'role_query.txt')
 
     def save_raw_relations(self):
         for relation in Relation:
             self.__save_raw_relations_for_type(relation)
 
+    def __save_raw_relations_for_type(self, relation):
+        names = relation.get_relations_names()
+        for name in names:
+            self.__save_results_from_query_resource_batched(
+                lambda data: self.db.insert_raw_relations(DbpediaReader.__create_relation_dict(relation.name, data)),
+                'relation_query.txt', name)
+
     def save_raw_redirects(self):
         self.__save_results_from_query_resource_batched(
-            lambda data: self.db.save_raw_relations(DbpediaReader.__create_relation_dict(Relation.OTHER.name, data)),
+            lambda data: self.db.insert_raw_relations(DbpediaReader.__create_relation_dict(Relation.OTHER.name, data)),
             'wiki_redirect_query.txt')
 
     def save_raw_types(self):
