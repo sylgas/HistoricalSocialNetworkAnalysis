@@ -1,13 +1,14 @@
 PREFIX ontology: <http://dbpedia.org/ontology/>
 PREFIX property: <http://dbpedia.org/property/>
 
-SELECT ?body ?dynasty ?surname ?familyName ?activeYearsStartDate
+SELECT ?body ?dynasty ?house ?surname ?familyName ?activeYearsStartDate
 		?activeYearsStartYear ?birthDate ?birthYear ?ideology ?activeYearsEndDate
 		?activeYearsEndYear ?deathDate ?deathYear ?birthName ?givenName ?name ?nick
 		?pseudonym ?citizenship ?country ?nationality ?stateOfOrigin
 	WHERE {{
     ?body a ontology:Person.
 	OPTIONAL {{?body property:dynasty ?dynasty.}}
+	OPTIONAL {{?body property:house ?house.}}
 	OPTIONAL {{?body property:surname ?surname.}}
 	OPTIONAL {{?body property:familyName ?familyName.}}
 	OPTIONAL {{?body property:activeYear ?activeYear.}}

@@ -1,13 +1,18 @@
 PREFIX ontology: <http://dbpedia.org/ontology/>
 PREFIX property: <http://dbpedia.org/property/>
 
-SELECT ?body ?profession ?occupation ?discipline ?speciality
+SELECT ?body ?profession ?occupation ?title1 ?office1 ?title2 ?office2 ?discipline ?speciality
 	WHERE {{
     ?body a ontology:Person.
 	OPTIONAL {{?body ontology:discipline ?discipline.}}
 	OPTIONAL {{?body ontology:occupation ?occupation.}}
 	OPTIONAL {{?body property:profession ?profession.}}
 	OPTIONAL {{?body property:speciality ?speciality.}}
+	OPTIONAL {{?body ontology:title ?title1.}}
+	OPTIONAL {{?body property:title ?title2.}}
+	OPTIONAL {{?body ontology:office ?office1.}}
+	OPTIONAL {{?body property:office ?office2.}}
+
 }}
 LIMIT 10000
 OFFSET {0}

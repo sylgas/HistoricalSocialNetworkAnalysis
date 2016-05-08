@@ -1,6 +1,8 @@
 import datetime
 import re
 
+from src.common.enums import Type, Relation
+
 
 class Parser(object):
     RESOURCE_REGEXES = [r'http://dbpedia\.org/resource/(?P<value>[^\(\)]*)(\(.*\))*',
@@ -93,7 +95,7 @@ class PersonParser(Parser):
                                                          'givenName', 'nick')
 
     def __parse_dynasty(self, raw_persons):
-        return self.extract_first_attribute_string_value(raw_persons, 'dynasty', 'familyName', 'surname')
+        return self.extract_first_attribute_string_value(raw_persons, 'dynasty', 'house', 'familyName', 'surname')
 
     def __parse_first_year_of_activity(self, raw_persons):
         return self.__extract_date_value(raw_persons, 'activeYearsStartYear', 'activeYearsStartDate',
@@ -123,7 +125,7 @@ class RoleParser(Parser):
     def __assign_role_if_none(self, person, raw_role):
         if 'role' not in person:
             role = self.extract_first_attribute_string_value(raw_role, 'profession', 'occupation', 'discipline',
-                                                             'speciality')
+                                                             'title1', 'office1', 'title2', 'office2', 'speciality')
             person['role'] = role
             self.db.save_person(person)
 
@@ -132,14 +134,54 @@ class RelationParser(Parser):
     def parse(self):
         cursor = self.db.find_all_raw_relations()
         for raw_relation_group in cursor:
+            if raw_relation_group['type'] == Relation.OTHER.name:
+                continue
             for raw_relation in raw_relation_group['relations']:
-                relation = self.__parse_relation_from(raw_relation_group['type'], raw_relation)
+                relation = self.parse_relation_from(raw_relation_group['type'], raw_relation)
                 self.db.insert_relation(relation)
 
     @staticmethod
-    def __parse_relation_from(relation_type, raw_relation):
-        return dict(
-            fromUrl=raw_relation['body']['value'],
-            toUrl=raw_relation['relation']['value'],
-            type=relation_type
-        )
+    def parse_relation_from(relation_type, raw_relation):
+        return {
+            'from': raw_relation['body']['value'],
+            'to': raw_relation['relation']['value'],
+            'type': relation_type
+        }
+
+
+class RedirectParser(RelationParser):
+    def parse(self):
+        cursor = self.db.find_raw_relations()
+        for raw_relation_group in cursor:
+            if raw_relation_group['type'] == Relation.OTHER.name:
+                for raw_relation in raw_relation_group['relations']:
+                    if not self.db.relation_exist(raw_relation):
+                        relation = self.parse_relation_from(Relation.OTHER.name, raw_relation)
+                        self.db.insert_relation(relation)
+
+
+class TypeParser(Parser):
+    def parse(self):
+        cursor = self.db.find_all_persons()
+        for person in cursor:
+            person_type = self.find_type_for(person)
+            person['type'] = person_type
+            self.db.save_person(person)
+
+    def find_type_for(self, person):
+        person_type = 'Person'
+        raw_types = self.db.find_raw_types_for(person['url'])
+        current_index = 5
+        for raw_type in raw_types:
+            types = Type().get_types()
+            for index in range(len(types)):
+                for ptype in types[index]:
+                    if ptype in raw_type['type']['value']:
+                        if index == 0:
+                            print(ptype)
+                            return ptype
+                        elif index < current_index:
+                            current_index = index
+                            print(ptype)
+                            person_type = ptype
+        return person_type

@@ -1,8 +1,8 @@
 PREFIX ontology: <http://dbpedia.org/ontology/>
 
-SELECT ?body ?redirect WHERE {{
+SELECT ?body ?relation WHERE {{
   ?body a ontology:Person.
-  ?redirect ontology:wikiPageRedirects ?body.
+  ?relation ontology:wikiPageRedirects ?body.
 }}
 
 LIMIT 10000

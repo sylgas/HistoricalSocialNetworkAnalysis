@@ -11,6 +11,7 @@ class DatabaseConnector:
         self.raw_persons = db.raw_persons
         self.raw_roles = db.raw_roles
         self.raw_relations = db.raw_relations
+        self.raw_types = db.raw_types
         self.ensure_indexes()
 
     def ensure_indexes(self):
@@ -53,6 +54,15 @@ class DatabaseConnector:
         except DuplicateKeyError as e:
             print("Tried to insert relation duplicate. Should not happen!\n" + str(e))
 
+    def save_raw_types(self, json):
+        try:
+            self.raw_types.insert_many(json)
+        except DuplicateKeyError as e:
+            print("Tried to insert relation duplicate. Should not happen!\n" + str(e))
+
+    def find_raw_persons_for(self, url):
+        return self.raw_persons.find({'body.value': url})
+
     def find_all_raw_roles(self):
         return self.raw_roles.find()
 
@@ -62,8 +72,8 @@ class DatabaseConnector:
     def find_raw_relations_for(self, url):
         return self.raw_relations.find({'body.value': url})
 
-    def find_raw_persons_for(self, url):
-        return self.raw_persons.find({'body.value': url})
+    def find_raw_types_for(self, url):
+        return self.raw_types.find({'body.value': url})
 
     def find_persons_in_period(self, since, to):
         return self.persons.find(
@@ -90,3 +100,9 @@ class DatabaseConnector:
 
     def find_distinct_person_types(self):
         return self.persons.distinct('type')
+
+    def relation_exist(self, raw_relation):
+        return self.relations.count(
+            {'$or': [{'$and': [{'from': raw_relation['body']['value']}, {'to': raw_relation['relation']['value']}]},
+                     {'$and': [{'from': raw_relation['relation']['value']},
+                               {'to': raw_relation['body']['value']}]}]}) > 0
