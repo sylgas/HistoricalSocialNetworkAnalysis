@@ -139,7 +139,7 @@ class RelationParser(Parser):
     @staticmethod
     def __parse_relation_from(relation_type, raw_relation):
         return dict(
-            url1=raw_relation['body']['value'],
-            url2=raw_relation['relation']['value'],
+            fromUrl=raw_relation['body']['value'],
+            toUrl=raw_relation['relation']['value'],
             type=relation_type
         )
