@@ -101,8 +101,6 @@ class DatabaseConnector:
     def find_distinct_person_types(self):
         return self.persons.distinct('type')
 
-    def relation_exist(self, raw_relation):
+    def relation_exists(self, raw_relation):
         return self.relations.count(
-            {'$or': [{'$and': [{'from': raw_relation['body']['value']}, {'to': raw_relation['relation']['value']}]},
-                     {'$and': [{'from': raw_relation['relation']['value']},
-                               {'to': raw_relation['body']['value']}]}]}) > 0
+            {{'$and': [{'from': raw_relation['body']['value']}, {'to': raw_relation['relation']['value']}]}}) > 0

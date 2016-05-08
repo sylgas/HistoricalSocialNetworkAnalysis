@@ -1,6 +1,6 @@
 from src.common.db.connector import DatabaseConnector
 from src.data.dbpedia.cleaner import DatePersonCleaner
-from src.data.dbpedia.parser import RelationParser, PersonParser, TypeParser
+from src.data.dbpedia.parser import RelationParser, PersonParser, TypeParser, RedirectParser
 from src.data.dbpedia.reader import DbpediaReader
 
 
@@ -43,9 +43,9 @@ def parse_data(db):
     parser.parse()
     print("Relations parsed")
 
-    # parser = RedirectParser(db)
-    # parser.parse()
-    # print("Redirects parsed")
+    parser = RedirectParser(db)
+    parser.parse()
+    print("Redirects parsed")
 
     parser = TypeParser(db)
     parser.parse()

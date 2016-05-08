@@ -155,7 +155,7 @@ class RedirectParser(RelationParser):
         for raw_relation_group in cursor:
             if raw_relation_group['type'] == Relation.OTHER.name:
                 for raw_relation in raw_relation_group['relations']:
-                    if not self.db.relation_exist(raw_relation):
+                    if not self.db.relation_exists(raw_relation):
                         relation = self.parse_relation_from(Relation.OTHER.name, raw_relation)
                         self.db.insert_relation(relation)
 

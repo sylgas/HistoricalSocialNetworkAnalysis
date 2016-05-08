@@ -1,4 +1,4 @@
-from src.common.enums import Relation
+from src.common.enums import Relation, Type
 
 
 class Statistics:
@@ -75,3 +75,30 @@ class Statistics:
         if res > 0:
             print('Data is incorrect. Run CLEANER!')
         return res
+
+    def count_persons_types(self):
+        type_list = []
+        for type_group in Type().get_types():
+            for type in type_group:
+                type_list.append((type, self.count_persons_by_type(type)))
+        return sorted(type_list, key=lambda x: x[1], reverse=True)
+
+    def count_persons_by_ages(self):
+        data = [0] * 13
+        cursor = self.db.find_all_persons()
+        for person in cursor:
+            avg_year = (person['firstYearOfActivity'] + person['lastYearOfActivity']) / 2
+            if avg_year <= 900:
+                data[0] += 1
+            elif avg_year > 2000:
+                data[12] += 1
+            else:
+                for i in range(10, 21):
+                    if avg_year < i * 100:
+                        data[i - 9] += 1
+                        break
+        return [
+            ('< X', data[0]), ('X', data[1]), ('XI', data[2]), ('XII', data[3]), ('XIII', data[4]), ('XIV', data[5]),
+            ('XV', data[6]), ('XVI', data[7]), ('XVII', data[8]), ('XVIII', data[9]), ('XIX', data[10]),
+            ('XX', data[11]), ('XXI', data[12])
+        ]
