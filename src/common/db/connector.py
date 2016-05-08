@@ -87,3 +87,6 @@ class DatabaseConnector:
 
     def save_person(self, person):
         self.persons.save(person)
+
+    def find_distinct_person_types(self):
+        return self.persons.distinct('type')
