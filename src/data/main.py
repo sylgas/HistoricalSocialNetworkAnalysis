@@ -1,5 +1,5 @@
 from src.common.db.connector import DatabaseConnector
-from src.data.dbpedia.cleaner import DatePersonCleaner
+from src.data.dbpedia.cleaner import DatePersonCleaner, RawPersonTypeCleaner
 from src.data.dbpedia.parser import RelationParser, PersonParser, TypeParser, HasRelationParser, RoleParser, \
     RedirectParser
 from src.data.dbpedia.reader import DbpediaReader
@@ -64,6 +64,11 @@ def clean_data(db):
 
     cleaner = DatePersonCleaner(db)
     cleaner.clean()
+    print("Cleaned persons without dates")
+
+    cleaner = RawPersonTypeCleaner(db)
+    cleaner.clean()
+    print("Cleaned default person types")
 
     print('Finished cleaning data')
 

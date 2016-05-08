@@ -1,4 +1,4 @@
-class PersonCleaner:
+class Cleaner:
     def __init__(self, db):
         self.db = db
 
@@ -6,7 +6,7 @@ class PersonCleaner:
         raise NotImplementedError("Should have implemented this")
 
 
-class DatePersonCleaner(PersonCleaner):
+class DatePersonCleaner(Cleaner):
     def __remove_where_no_dates(self):
         self.db.persons.remove({'firstYearOfActivity': '', 'lastYearOfActivity': ''})
 
@@ -24,3 +24,8 @@ class DatePersonCleaner(PersonCleaner):
     def clean(self):
         self.__remove_where_no_dates()
         self.__fill_empty_years_fields()
+
+
+class RawPersonTypeCleaner(Cleaner):
+    def clean(self):
+        self.db.raw_types.remove({'type.value': 'http://dbpedia.org/ontology/Person'})
