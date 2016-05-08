@@ -20,7 +20,7 @@ class DbpediaReader:
         return results['results']['bindings']
 
     def __save_results_from_query_resource_batched(self, save_method, resource_name, *args):
-        offset = 2600000
+        offset = 0
         while True:
             batch = self.__read_results_from_query_resource(resource_name, *args, offset)
             save_method(batch)
