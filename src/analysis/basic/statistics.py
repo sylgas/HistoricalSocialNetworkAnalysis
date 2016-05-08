@@ -13,6 +13,7 @@ class Statistics:
         self.print_statistic(self.count_persons_with_nationality)
         self.print_statistic(self.count_persons_with_role)
         self.print_count_persons_by_type_statistic()
+        self.print_statistic(self.count_persons_with_relations)
         self.print_statistic(self.count_relations)
         self.print_count_relations_by_type_statistic()
         self.print_statistic(self.count_incorrect_persons)
@@ -60,6 +61,9 @@ class Statistics:
 
     def count_persons_with_role(self):
         return self.db.count_all_persons({'role': {'$ne': ''}})
+
+    def count_persons_with_relations(self):
+        return self.db.count_all_persons({'hasRelation': True})
 
     def count_incorrect_persons(self):
         res = self.db.count_all_persons({'$or': [

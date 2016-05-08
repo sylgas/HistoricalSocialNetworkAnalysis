@@ -17,6 +17,7 @@ class DatabaseConnector:
     def ensure_indexes(self):
         self.persons.ensure_index('url', unique=True)
         self.relations.create_index([('url1', ASCENDING), ('url2', ASCENDING), ('type', ASCENDING)], unique=True)
+        self.persons.create_index('hasRelation', sparse=True)
 
     def find_distinct_urls(self):
         return [elem['_id'] for elem in
@@ -100,6 +101,12 @@ class DatabaseConnector:
 
     def find_distinct_person_types(self):
         return self.persons.distinct('type')
+
+    def find_all_relations(self, query={}):
+        return self.relations.find(query)
+
+    def update_person(self, find_query, update_query):
+        self.persons.update(find_query, update_query, multi=False)
 
     def relation_exist(self, raw_relation):
         return self.relations.count(
