@@ -1,0 +1,10 @@
+PREFIX ontology: <http://dbpedia.org/ontology/>
+PREFIX property: <http://dbpedia.org/property/>
+
+SELECT ?body ?type WHERE {{
+    ?body a ontology:Person.
+    ?body rdf:type ?type.
+    FILTER regex(str(?type), "http://dbpedia.org/ontology/").
+}}
+LIMIT 10000
+OFFSET {0}
