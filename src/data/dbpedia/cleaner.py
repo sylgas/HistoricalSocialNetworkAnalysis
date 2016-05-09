@@ -26,6 +26,9 @@ class DatePersonCleaner(Cleaner):
         self.__fill_empty_years_fields()
 
 
-class RawPersonTypeCleaner(Cleaner):
+class RelationCleaner(Cleaner):
     def clean(self):
-        self.db.raw_types.remove({'type.value': 'http://dbpedia.org/ontology/Person'})
+        cursor = self.db.find_all_relations()
+        for relation in cursor:
+            if not self.db.relation_persons_exist(relation):
+                self.db.relations.remove({'_id': relation['_id']})

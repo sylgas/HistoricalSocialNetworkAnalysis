@@ -99,6 +99,9 @@ class DatabaseConnector:
     def count_all_persons(self, query={}):
         return self.persons.count(query)
 
+    def find_all_relations(self, query={}):
+        return self.relations.find(query)
+
     def count_all_relations(self, query={}):
         return self.relations.count(query)
 
@@ -112,12 +115,12 @@ class DatabaseConnector:
         # return self.persons.aggregate([{'$group': {'_id': '$type'}}], allowDiskUse=True)
         return self.persons.distinct('type')
 
-    def find_all_relations(self, query={}):
-        return self.relations.find(query)
-
     def update_persons(self, find_query, update_query):
-        self.persons.update(find_query, update_query, multi=False)
+        self.persons.update(find_query, update_query)
 
     def relation_exists(self, raw_relation):
         return self.relations.count(
             {'$and': [{'from': raw_relation['body']['value']}, {'to': raw_relation['relation']['value']}]}) > 0
+
+    def relation_persons_exist(self, relation):
+        return self.persons.count({'$or': [{'url': relation['from']}, {'url': relation['to']}]}) > 1
