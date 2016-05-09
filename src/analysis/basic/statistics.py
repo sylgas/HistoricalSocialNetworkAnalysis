@@ -93,7 +93,7 @@ class Statistics:
         data = [0] * 13
         cursor = self.db.find_all_persons()
         for person in cursor:
-            avg_year = (person['firstYearOfActivity'] + person['lastYearOfActivity']) / 2
+            avg_year = (int(person['firstYearOfActivity']) + int(person['lastYearOfActivity'])) / 2
             if avg_year <= 900:
                 data[0] += 1
             elif avg_year > 2000:
