@@ -67,8 +67,11 @@ class DatabaseConnector:
     def find_all_raw_roles(self):
         return self.raw_roles.find()
 
+    def find_all_raw_types(self):
+        return self.raw_types.find()
+
     def find_all_raw_relations(self):
-        return self.raw_relations.find()
+        return self.raw_relations.find(no_cursor_timeout=True)
 
     def find_raw_relations_for(self, url):
         return self.raw_relations.find({'body.value': url})
@@ -111,8 +114,8 @@ class DatabaseConnector:
     def find_distinct_person_types(self):
         return self.persons.distinct('type')
 
-    def update_person(self, find_query, update_query):
-        self.persons.update(find_query, update_query, multi=False)
+    def update_persons(self, find_query, update_query):
+        self.persons.update(find_query, update_query)
 
     def relation_exists(self, raw_relation):
         return self.relations.count(
