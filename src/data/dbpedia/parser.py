@@ -175,12 +175,20 @@ class HasRelationParser(Parser):
 class TypeParser(Parser):
     def parse(self):
         cursor = self.db.find_all_raw_types()
-        for ptype in cursor:
-            person = self.db.find_one_person({'url': ptype['body']['value']})
-            if person is not None and self.new_is_more_precise(person, ptype):
-                person['type'] = ptype
-                self.db.save_person(person)
+        for raw_type in cursor:
+            person = self.db.find_one_person({'url': raw_type['body']['value']})
+            if person is not None:
+                self.update_type_if_needed(person, raw_type)
 
-    @staticmethod
-    def new_is_more_precise(person, ptype):
-        return 'type' not in person or TypeHelper.get_level(ptype) < TypeHelper.get_level(person['type'])
+    def update_type_if_needed(self, person, raw_type):
+        for index in range(len(TypeHelper.TYPES)):
+            for tmp_type in TypeHelper.TYPES[index]:
+                if 'type' in person and tmp_type == person['type']:
+                    return
+                if tmp_type in raw_type['type']['value']:
+                    self.update_type(person, tmp_type)
+                    return
+
+    def update_type(self, person, new_type):
+        person['type'] = new_type
+        self.db.save_person(person)

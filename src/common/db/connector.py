@@ -109,6 +109,7 @@ class DatabaseConnector:
         self.persons.save(person)
 
     def find_distinct_person_types(self):
+        # return self.persons.aggregate([{'$group': {'_id': '$type'}}], allowDiskUse=True)
         return self.persons.distinct('type')
 
     def find_all_relations(self, query={}):

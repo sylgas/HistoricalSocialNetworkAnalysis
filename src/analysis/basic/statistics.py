@@ -1,6 +1,6 @@
-from src.common.enums import Type
 from src.analysis.printer import FunctionPrinter
 from src.common.enums import Relation
+from src.common.helper import TypeHelper
 
 
 class Statistics:
@@ -71,8 +71,8 @@ class Statistics:
         res = self.db.count_all_persons({'$or': [
             {'url': {'$exists': False}},
             {'url': ''},
-            {'type': {'$exists': False}},
-            {'type': ''},
+            # {'type': {'$exists': False}},
+            # {'type': ''},
             {'firstYearOfActivity': {'$exists': False}},
             {'firstYearOfActivity': ''},
             {'lastYearOfActivity': {'$exists': False}},
@@ -84,7 +84,7 @@ class Statistics:
 
     def count_persons_types(self):
         type_list = []
-        for type_group in Type().get_types():
+        for type_group in TypeHelper.TYPES:
             for type in type_group:
                 type_list.append((type, self.count_persons_by_type(type)))
         return sorted(type_list, key=lambda x: x[1], reverse=True)

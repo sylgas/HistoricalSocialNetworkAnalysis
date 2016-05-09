@@ -46,8 +46,8 @@ def print_centralities(graph):
 
 def main():
     db = DatabaseConnector('localhost', 27017, 'historical-relations')
+    print_statistics(db)
     graph = GraphBuilder(db, 1939, 1945).build()
-    # print_statistics(db)
     print_centralities(graph)
     finder = GroupsFinder(graph)
     finder.find_groups()

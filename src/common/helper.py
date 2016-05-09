@@ -34,9 +34,3 @@ class TypeHelper:
         ['Athlete', 'Artist']
     ]
 
-    @staticmethod
-    def get_level(ptype):
-        for index in range(len(TypeHelper.TYPES)):
-            if ptype in TypeHelper.TYPES[index]:
-                return index
-        return 5
