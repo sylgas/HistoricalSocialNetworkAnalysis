@@ -1,7 +1,8 @@
 import datetime
 import re
 
-from src.common.enums import Type, Relation
+from src.common.enums import Relation
+from src.common.helper import TypeHelper
 
 
 class Parser(object):
@@ -139,7 +140,7 @@ class RelationParser(Parser):
             for raw_relation in raw_relation_group['relations']:
                 relation = self.parse_relation_from(raw_relation_group['type'], raw_relation)
                 self.db.insert_relation(relation)
-        cursor.__die()
+        cursor.close()
 
     @staticmethod
     def parse_relation_from(relation_type, raw_relation):
@@ -167,30 +168,19 @@ class HasRelationParser(Parser):
         for relation in relations:
             self.db.update_persons(
                 {'$or': [{'url': relation['to']}, {'url': relation['from']}]},
-                {'hasRelation', True}
+                {'$set': {'hasRelation': True}}
             )
 
 
 class TypeParser(Parser):
     def parse(self):
-        cursor = self.db.find_all_persons()
-        for person in cursor:
-            person_type = self.find_type_for(person)
-            person['type'] = person_type
-            self.db.save_person(person)
+        cursor = self.db.find_all_raw_types()
+        for ptype in cursor:
+            person = self.db.find_one_person({'url': ptype['body']['value']})
+            if person is not None and self.new_is_more_precise(person, ptype):
+                person['type'] = ptype
+                self.db.save_person(person)
 
-    def find_type_for(self, person):
-        person_type = 'Person'
-        raw_types = self.db.find_raw_types_for(person['url'])
-        current_index = 5
-        for raw_type in raw_types:
-            types = Type().get_types()
-            for index in range(len(types)):
-                for ptype in types[index]:
-                    if ptype in raw_type['type']['value']:
-                        if index == 0:
-                            return ptype
-                        elif index < current_index:
-                            current_index = index
-                            person_type = ptype
-        return person_type
+    @staticmethod
+    def new_is_more_precise(person, ptype):
+        return 'type' not in person or TypeHelper.get_level(ptype) < TypeHelper.get_level(person['type'])

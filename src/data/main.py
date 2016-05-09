@@ -1,6 +1,5 @@
 from src.common.db.connector import DatabaseConnector
 from src.data.dbpedia.cleaner import DatePersonCleaner, RawPersonTypeCleaner
-from src.data.dbpedia.parser import RelationParser, HasRelationParser, RedirectParser
 from src.data.dbpedia.reader import DbpediaReader
 
 
@@ -33,23 +32,23 @@ def parse_data(db):
     # parser = PersonParser(db)
     # parser.parse()
     # print("Persons parsed")
-    # clean_data(db)
-    #
+    clean_data(db)
+
     # parser = RoleParser(db)
     # parser.parse()
     # print("Roles parsed")
     #
-    parser = RelationParser(db)
-    parser.parse()
-    print("Relations parsed")
+    # parser = RelationParser(db)
+    # parser.parse()
+    # print("Relations parsed")
 
-    parser = RedirectParser(db)
-    parser.parse()
-    print("Redirects parsed")
-
-    parser = HasRelationParser(db)
-    parser.parse()
-    print('HasRelation field parsed')
+    # parser = RedirectParser(db)
+    # parser.parse()
+    # print("Redirects parsed")
+    #
+    # parser = HasRelationParser(db)
+    # parser.parse()
+    # print('HasRelation field parsed')
 
     # parser = TypeParser(db)
     # parser.parse()

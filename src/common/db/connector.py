@@ -67,6 +67,9 @@ class DatabaseConnector:
     def find_all_raw_roles(self):
         return self.raw_roles.find()
 
+    def find_all_raw_types(self):
+        return self.raw_types.find()
+
     def find_all_raw_relations(self):
         return self.raw_relations.find(no_cursor_timeout=True)
 
