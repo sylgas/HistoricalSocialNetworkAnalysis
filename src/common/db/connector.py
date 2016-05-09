@@ -16,7 +16,7 @@ class DatabaseConnector:
 
     def ensure_indexes(self):
         self.persons.ensure_index('url', unique=True)
-        self.relations.create_index([('url1', ASCENDING), ('url2', ASCENDING), ('type', ASCENDING)], unique=True)
+        self.relations.create_index([('from', ASCENDING), ('to', ASCENDING), ('type', ASCENDING)], unique=True)
         self.persons.create_index('hasRelation', sparse=True)
 
     def find_distinct_urls_from_raw_persons(self):
@@ -68,7 +68,7 @@ class DatabaseConnector:
         return self.raw_roles.find()
 
     def find_all_raw_relations(self):
-        return self.raw_relations.find()
+        return self.raw_relations.find(no_cursor_timeout=True)
 
     def find_raw_relations_for(self, url):
         return self.raw_relations.find({'body.value': url})
@@ -111,9 +111,9 @@ class DatabaseConnector:
     def find_all_relations(self, query={}):
         return self.relations.find(query)
 
-    def update_person(self, find_query, update_query):
+    def update_persons(self, find_query, update_query):
         self.persons.update(find_query, update_query, multi=False)
 
     def relation_exists(self, raw_relation):
         return self.relations.count(
-            {{'$and': [{'from': raw_relation['body']['value']}, {'to': raw_relation['relation']['value']}]}}) > 0
+            {'$and': [{'from': raw_relation['body']['value']}, {'to': raw_relation['relation']['value']}]}) > 0

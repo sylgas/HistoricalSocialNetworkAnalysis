@@ -139,6 +139,7 @@ class RelationParser(Parser):
             for raw_relation in raw_relation_group['relations']:
                 relation = self.parse_relation_from(raw_relation_group['type'], raw_relation)
                 self.db.insert_relation(relation)
+        cursor.__die()
 
     @staticmethod
     def parse_relation_from(relation_type, raw_relation):
@@ -151,7 +152,7 @@ class RelationParser(Parser):
 
 class RedirectParser(RelationParser):
     def parse(self):
-        cursor = self.db.find_raw_relations()
+        cursor = self.db.find_all_raw_relations()
         for raw_relation_group in cursor:
             if raw_relation_group['type'] == Relation.OTHER.name:
                 for raw_relation in raw_relation_group['relations']:
@@ -188,10 +189,8 @@ class TypeParser(Parser):
                 for ptype in types[index]:
                     if ptype in raw_type['type']['value']:
                         if index == 0:
-                            print(ptype)
                             return ptype
                         elif index < current_index:
                             current_index = index
-                            print(ptype)
                             person_type = ptype
         return person_type

@@ -1,5 +1,7 @@
 from src.analysis.basic.statistics import Statistics
+from src.analysis.graph.builder import GraphBuilder
 from src.analysis.graph.centrality import CentralityMeasurer
+from src.analysis.graph.groups import GroupsFinder
 from src.common.db.connector import DatabaseConnector
 from src.common.enums import Relation
 from src.visualisation.Plotter import Plotter
@@ -37,15 +39,18 @@ def print_statistics(db):
     statistics.print_all()
 
 
-def print_centralities(db):
-    measurer = CentralityMeasurer(db)
+def print_centralities(graph):
+    measurer = CentralityMeasurer(graph)
     measurer.print_all()
 
 
 def main():
     db = DatabaseConnector('localhost', 27017, 'historical-relations')
+    graph = GraphBuilder(db, 1939, 1945).build()
     # print_statistics(db)
-    print_centralities(db)
+    print_centralities(graph)
+    finder = GroupsFinder(graph)
+    finder.find_groups()
 
 
 if __name__ == '__main__':
