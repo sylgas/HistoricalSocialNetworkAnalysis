@@ -79,7 +79,7 @@ class Plotter:
 
     @staticmethod
     def __save_plot(title):
-        plt.savefig('../plot/{0}.png'.format(title), bbox_inches='tight')
+        plt.savefig('../../plot/{0}.png'.format(title), bbox_inches='tight')
         plt.close()
 
     @staticmethod

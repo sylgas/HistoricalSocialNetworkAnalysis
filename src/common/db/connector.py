@@ -116,7 +116,7 @@ class DatabaseConnector:
         return self.persons.distinct('type')
 
     def update_persons(self, find_query, update_query):
-        self.persons.update(find_query, update_query)
+        self.persons.update(find_query, update_query, multi=True)
 
     def relation_exists(self, raw_relation):
         return self.relations.count(
