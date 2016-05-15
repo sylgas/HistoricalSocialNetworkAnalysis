@@ -54,7 +54,7 @@ def main():
     # print_and_draw_statistics(db)
 
     print("Building graph...")
-    graph = GraphBuilder(db, 10, 10).build()
+    graph = GraphBuilder(db, 1945, 1945).build()
     print("Finished building graph")
 
     drawer = GraphDrawer()

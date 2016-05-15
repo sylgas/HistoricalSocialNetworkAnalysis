@@ -8,7 +8,7 @@ class GraphBuilder:
 
     @staticmethod
     def build_nodes(db, since, to):
-        return db.find_persons_in_period(since, to).distinct('url')
+        return db.find_persons_in_period_with_relations(since, to).distinct('url')
 
     def add_edges(self, graph):
         relations = self.db.find_relations_for(self.nodes)
