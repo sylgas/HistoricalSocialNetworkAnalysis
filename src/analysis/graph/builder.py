@@ -8,7 +8,6 @@ class Graph:
             self.nodes = self.__build_nodes(since, to)
         else:
             self.nodes = list(nodes)
-
         self.graph = self.__build()
 
     def get(self):
@@ -46,8 +45,8 @@ class SimpleGraph(Graph):
 
 
 class AnalyticalGraph(Graph):
-    def __init__(self, db, since, to):
-        super(AnalyticalGraph, self).__init__(db, since, to)
+    def __init__(self, db, nodes=None, since=None, to=None):
+        super(AnalyticalGraph, self).__init__(db, nodes=nodes, since=since, to=to)
         self.degree_centrality = nx.degree_centrality(self.graph)
         self.betweeness_centrality = nx.betweenness_centrality(self.graph)
         self.closeness_centrality = nx.closeness_centrality(self.graph)
