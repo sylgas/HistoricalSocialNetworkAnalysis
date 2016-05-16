@@ -2,6 +2,7 @@ from src.analysis.basic.statistics import Statistics
 from src.analysis.graph.builder import GraphBuilder
 from src.analysis.graph.centrality import CentralityMeasurer
 # from src.analysis.graph.groups import GroupsFinder
+from src.analysis.graph.groups import GroupsFinder
 from src.common.db.connector import DatabaseConnector
 from src.common.enums import Relation
 from src.visualisation.Plotter import Plotter
@@ -54,11 +55,13 @@ def main():
     # print_and_draw_statistics(db)
 
     print("Building graph...")
-    graph = GraphBuilder(db, 1945, 1945).build()
+    graph = GraphBuilder(db, since=1945, to=1945).build()
     print("Finished building graph")
 
     drawer = GraphDrawer()
-    drawer.draw(graph)
+    # drawer.draw(graph)
+    groups = GroupsFinder(graph).find_groups_cpm(3)
+    drawer.draw_groups(db, groups)
 
     print("Finished...")
 

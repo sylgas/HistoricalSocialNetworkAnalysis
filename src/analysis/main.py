@@ -27,7 +27,7 @@ def main():
 
     # print_centralities(graph)
     finder = GroupsFinder(graph)
-    finder.find_groups_cpm(5)
+    print(finder.find_groups_cpm(5))
     print("Finished...")
 
 

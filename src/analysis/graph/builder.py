@@ -2,9 +2,12 @@ import networkx as nx
 
 
 class GraphBuilder:
-    def __init__(self, db, since, to):
+    def __init__(self, db, nodes=None, since=None, to=None):
         self.db = db
-        self.nodes = self.build_nodes(db, since, to)
+        if nodes is None:
+            self.nodes = self.build_nodes(db, since, to)
+        else:
+            self.nodes = list(nodes)
 
     @staticmethod
     def build_nodes(db, since, to):

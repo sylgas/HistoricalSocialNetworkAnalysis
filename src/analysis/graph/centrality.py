@@ -21,6 +21,7 @@ class CentralityMeasurer:
         return self.__create_ranking(res)
 
     def betweeness_centrality_ranking(self):
+        # results = nx.betweenness_centrality(self.graph, k=200)
         results = nx.betweenness_centrality(self.graph)
         return self.__create_ranking(results)
 
