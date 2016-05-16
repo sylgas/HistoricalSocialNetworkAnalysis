@@ -22,12 +22,12 @@ def main():
     # print_statistics(db)
 
     print("Building graph...")
-    graph = SimpleGraph(db, 1939, 1945).get()
+    graph = SimpleGraph(db, since=1939, to=1945).get()
     print("Finished building graph")
 
     # print_centralities(graph)
     finder = GroupsFinder(graph)
-    finder.find_groups_cpm(5)
+    print(finder.find_groups_cpm(5))
     print("Finished...")
 
 

@@ -2,9 +2,13 @@ import networkx as nx
 
 
 class Graph:
-    def __init__(self, db, since, to):
+    def __init__(self, db, nodes=None, since=None, to=None):
         self.db = db
-        self.nodes = self.__build_nodes(since, to)
+        if nodes is None:
+            self.nodes = self.__build_nodes(since, to)
+        else:
+            self.nodes = list(nodes)
+
         self.graph = self.__build()
 
     def get(self):
@@ -35,7 +39,7 @@ class Graph:
 
 class SimpleGraph(Graph):
     def __build_nodes(self, since, to):
-        return self.db.find_persons_in_period(since, to).distinct('url')
+        return self.db.find_persons_in_period_with_relations(since, to).distinct('url')
 
     def __get_node_urls(self):
         return self.nodes
@@ -67,7 +71,7 @@ class AnalyticalGraph(Graph):
 
     def __build_nodes(self, since, to):
         nodes = {}
-        for person in self.db.find_persons_in_period(since, to):
+        for person in self.db.find_persons_in_period_with_relations(since, to):
             nodes[person['url']] = person
         return nodes
 

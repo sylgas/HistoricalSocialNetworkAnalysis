@@ -79,10 +79,14 @@ class DatabaseConnector:
     def find_raw_types_for(self, url):
         return self.raw_types.find({'body.value': url})
 
-    def find_persons_in_period(self, since, to):
-        return self.persons.find(
-            {'$or': [{'$and': [{'firstYearOfActivity': {'$gte': since}}, {'firstYearOfActivity': {'$lte': to}}]},
-                     {'$and': [{'lastYearOfActivity': {'$gte': since}}, {'lastYearOfActivity': {'$lte': to}}]}]})
+    def find_persons_in_period_with_relations(self, since, to):
+        return self.persons.find({'$and': [
+            {'hasRelation': True},
+            {'$or': [
+                {'$and': [{'firstYearOfActivity': {'$gte': since}}, {'firstYearOfActivity': {'$lte': to}}]},
+                {'$and': [{'lastYearOfActivity': {'$gte': since}}, {'lastYearOfActivity': {'$lte': to}}]}
+            ]}
+        ]})
 
     def find_relations_for(self, urls):
         return self.relations.find({'$or': [

@@ -1,5 +1,5 @@
 import operator
-
+import community as louvain
 import networkx as nx
 
 
@@ -11,7 +11,7 @@ class GroupsFinder:
         return nx.k_clique_communities(self.graph, min_k)
 
     def find_groups_louvain(self):
-        pass
+        return louvain.best_partition(self.graph)
 
 
 class Profile:
