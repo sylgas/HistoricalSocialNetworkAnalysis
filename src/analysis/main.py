@@ -1,5 +1,5 @@
 from src.analysis.basic.statistics import Statistics
-from src.analysis.graph.builder import GraphBuilder
+from src.analysis.graph.builder import SimpleGraph
 from src.analysis.graph.centrality import CentralityMeasurer
 # from src.analysis.graph.groups import GroupsFinder
 from src.analysis.graph.groups import GroupsFinder
@@ -22,7 +22,7 @@ def main():
     # print_statistics(db)
 
     print("Building graph...")
-    graph = GraphBuilder(db, 1939, 1945).build()
+    graph = SimpleGraph(db, 1939, 1945).get()
     print("Finished building graph")
 
     # print_centralities(graph)
