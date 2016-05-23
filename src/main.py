@@ -6,7 +6,6 @@ from src.analysis.graph.groups import GroupsFinder
 from src.common.db.connector import DatabaseConnector
 from src.common.enums import Relation
 from src.visualisation.Plotter import Plotter
-from src.visualisation.graph import GraphDrawer
 
 
 def draw_relation_plot(plotter, statistics):
@@ -55,13 +54,14 @@ def main():
     # print_and_draw_statistics(db)
 
     print("Building graph...")
-    graph = GraphBuilder(db, since=1945, to=1945).build()
+    graph = GraphBuilder(db).build()
     print("Finished building graph")
+    cpm_groups = GroupsFinder(graph).find_groups_cpm(8)
+    louvain_groups = GroupsFinder(graph).find_groups_louvain()
 
-    drawer = GraphDrawer()
+    # drawer = GraphDrawer()
     # drawer.draw(graph)
-    groups = GroupsFinder(graph).find_groups_cpm(3)
-    drawer.draw_groups(db, groups)
+    # drawer.draw_groups(db, groups)
 
     print("Finished...")
 

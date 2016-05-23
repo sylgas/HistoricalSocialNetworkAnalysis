@@ -22,12 +22,12 @@ def main():
     # print_statistics(db)
 
     print("Building graph...")
-    graph = GraphBuilder(db, 1939, 1945).build()
+    graph = GraphBuilder(db).build()
     print("Finished building graph")
-
     # print_centralities(graph)
-    finder = GroupsFinder(graph)
-    print(finder.find_groups_cpm(5))
+    # GroupsFinder(graph).print_groups_cpm(range(2, 13))
+    GroupsFinder(graph).print_groups_louvain([0.05, 1.0, 2.0])
+
     print("Finished...")
 
 

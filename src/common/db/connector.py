@@ -88,6 +88,9 @@ class DatabaseConnector:
             ]}
         ]})
 
+    def find_persons_with_relations(self):
+        return self.find_all_persons({'hasRelation': True})
+
     def find_relations_for(self, urls):
         return self.relations.find({'$or': [
             {'to': {'$in': urls}},
