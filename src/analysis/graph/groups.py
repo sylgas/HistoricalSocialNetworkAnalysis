@@ -1,4 +1,5 @@
 import operator
+
 import community as louvain
 import networkx as nx
 
@@ -12,6 +13,14 @@ class GroupsFinder:
 
     def find_groups_louvain(self):
         return louvain.best_partition(self.graph)
+
+
+class GroupComparator:
+    def __init__(self, graph, old_groups, new_groups):
+        for og in old_groups:
+            for ng in new_groups:
+                pass
+
 
 
 class Profile:
@@ -102,11 +111,29 @@ class ProfileComparator:
         self.new_profile = new_profile
         old_nodes = old_profile.get_nodes()
         new_nodes = new_profile.get_nodes()
-        self.all_nodes_count = len(old_nodes) + len(new_nodes)
+        self.all_nodes_count = len(set(old_nodes + new_nodes))
         self.common = list(set(old_nodes).intersection(new_nodes))
-        self.old = [n for n in old_nodes if n not in self.common]
-        self.new = [n for n in new_nodes if n not in self.common]
+        self.only_old = [n for n in old_nodes if n not in self.common]
+        self.only_new = [n for n in new_nodes if n not in self.common]
+        self.differences = self.__find_differences()
 
     # returns <0, 1> - the higher value the greater probability is the same group
     def get_similarity_factor(self):
         return (2.0 * len(self.common)) / self.all_nodes_count
+
+    def get_differences(self):
+        return self.differences
+
+    def __find_differences(self):
+        return {
+            'count': self.old_profile.get['count'] - self.new_profile.get['count'],
+            'top_person': (self.old_profile.get['top_person'], self.new_profile.get['top_person']),
+            'type': (self.old_profile.get['type'], self.new_profile.get['type']),
+            'nationality': (self.old_profile.get['nationality'], self.new_profile.get['nationality']),
+            'degree_centrality': self.old_profile.get['degree_centrality'] - self.new_profile.get['degree_centrality'],
+            'betweeness_centrality': self.old_profile.get['betweeness_centrality'] - self.new_profile.get['betweeness_centrality'],
+            'closeness_centrality': self.old_profile.get['closeness_centrality'] - self.new_profile.get['closeness_centrality'],
+            'eigenvector_centrality': self.old_profile.get['eigenvector_centrality'] - self.new_profile.get['eigenvector_centrality'],
+            'page_rank': self.old_profile.get['page_rank'] - self.new_profile.get['page_rank'],
+        }
+
