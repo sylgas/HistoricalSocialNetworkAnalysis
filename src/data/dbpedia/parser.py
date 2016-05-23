@@ -179,6 +179,12 @@ class TypeParser(Parser):
             person = self.db.find_one_person({'url': raw_type['body']['value']})
             if person is not None:
                 self.update_type_if_needed(person, raw_type)
+        self.__parse_if_empty()
+
+    def __parse_if_empty(self):
+        persons = self.db.find_all_persons({'type': {'$exists': False}})
+        for person in persons:
+            self.update_type(person, 'Person')
 
     def update_type_if_needed(self, person, raw_type):
         for index in range(len(TypeHelper.TYPES)):

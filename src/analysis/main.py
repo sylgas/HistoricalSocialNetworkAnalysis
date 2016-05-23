@@ -19,7 +19,7 @@ def print_centralities(graph):
 def main():
     print("Starting...")
     db = DatabaseConnector('localhost', 27017, 'historical-relations')
-    # print_statistics(db)
+    print_statistics(db)
 
     print("Building graph...")
     graph = SimpleGraph(db, since=1939, to=1945).get()
