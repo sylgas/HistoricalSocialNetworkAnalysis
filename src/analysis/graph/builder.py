@@ -5,7 +5,7 @@ class Graph:
     def __init__(self, db, nodes=None, since=None, to=None):
         self.db = db
         if nodes is None:
-            self.nodes = self.__build_nodes(since, to)
+            self.nodes = self._build_nodes(since, to)
         else:
             self.nodes = list(nodes)
         self.graph = self.__build()
@@ -18,23 +18,23 @@ class Graph:
 
     def __build(self):
         graph = nx.Graph()
-        self.__add_edges(graph)
+        self._add_edges(graph)
         return graph
 
-    def __add_edges(self, graph):
+    def _add_edges(self, graph):
         raise NotImplementedError("Should have implemented this")
 
-    def __build_nodes(self, since, to):
+    def _build_nodes(self, since, to):
         raise NotImplementedError("Should have implemented this")
 
 
 class SimpleGraph(Graph):
-    def __build_nodes(self, since, to):
+    def _build_nodes(self, since, to):
         if since is None and to is None:
             return self.db.find_persons_with_relations().distinct('url')
         return self.db.find_persons_in_period_with_relations(since, to).distinct('url')
 
-    def __add_edges(self, graph):
+    def _add_edges(self, graph):
         for relation in self.db.find_relations_for(self.nodes):
             graph.add_edge(relation['from'], relation['to'], {'name': relation['type']})
 
@@ -67,12 +67,12 @@ class AnalyticalGraph(Graph):
     def get_page_rank(self):
         return self.page_rank
 
-    def __add_edges(self, graph):
+    def _add_edges(self, graph):
         for relation in self.db.find_relations_for(self.nodes.keys()):
             graph.add_edge(relation['from'], relation['to'], {'name': relation['type']})
             self.relations.append(relation)
 
-    def __build_nodes(self, since, to):
+    def _build_nodes(self, since, to):
         nodes = {}
         for person in self.db.find_persons_in_period_with_relations(since, to):
             nodes[person['url']] = person

@@ -1,11 +1,12 @@
 import operator
-from collections import Counter
 
 import community as louvain
 import networkx as nx
 
 
 class GroupsFinder:
+    LOUVAIN_GROUP_MIN_SIZE = 3
+
     def __init__(self, graph):
         self.graph = graph
 
@@ -17,11 +18,11 @@ class GroupsFinder:
 
     def print_groups_louvain(self, resolution_list, all=False):
         for resolution in resolution_list:
-            groups = dict(self.find_groups_louvain(res=resolution))
-            val_counter = Counter(groups.values())
-
-            print(val_counter)
-            print(str(resolution) + '\t' + str(len(set(groups.values()))))
+            node_to_id = self.find_groups_louvain(res=resolution)
+            group_ids = set(map(lambda node: node_to_id[node], node_to_id))
+            groups = [[node for node in node_to_id if node_to_id[node] == group_id] for group_id in group_ids]
+            groups = list(filter(lambda x: len(x) >= GroupsFinder.LOUVAIN_GROUP_MIN_SIZE, groups))
+            print(str(resolution) + '\t' + str(len(groups)))
             if all:
                 print(groups)
 

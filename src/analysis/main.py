@@ -26,7 +26,7 @@ def main():
     print("Finished building graph")
     # print_centralities(graph)
     # GroupsFinder(graph).print_groups_cpm(range(2, 13))
-    GroupsFinder(graph).print_groups_louvain([0.05, 1.0, 2.0])
+    GroupsFinder(graph).print_groups_louvain([0.0002, 1.0, 200.0])
 
     print("Finished...")
 
