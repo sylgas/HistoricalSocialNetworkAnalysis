@@ -7,22 +7,26 @@ class Relation(Enum):
                             'ontology:doctoralAdvisor', 'ontology:doctoralStudent', 'ontology:formerChoreographer',
                             'ontology:formerCoach', 'property:mentor', 'ontology:notableStudent', 'ontology:trainer'])
     POLITICS = dict(weight=3,
-                    names=['ontology:chancellor', 'ontology:deputy', 'property:followedBy', 'ontology:governor',
-                           'ontology:governorGeneral', 'ontology:monarch', 'ontology:nominee', 'ontology:opponent',
-                           'ontology:predecessor', 'ontology:primeMinister', 'ontology:runningMate',
-                           'ontology:successor',
-                           'ontology:vicePresident', 'ontology:vicePrimeMinister'])
+                    names=['ontology:deputy', 'property:followedBy', 'ontology:governor',
+                           'ontology:governorGeneral', 'ontology:nominee', 'ontology:opponent',
+                           'ontology:runningMate',
+                           ])
     COLLABORATION = dict(weight=3,
                          names=['property:alongside', 'ontology:appointer', 'ontology:associate',
                                 'ontology:associatedAct',
-                                'ontology:beatifiedBy', 'ontology:canonizedBy', 'property:chairman',
+                                'ontology:beatifiedBy', 'ontology:canonizedBy',
                                 'property:commander',
-                                'ontology:incumbent', 'property:leader', 'ontology:lieutenant'])
+                                'ontology:incumbent', 'ontology:lieutenant'])
     PERSONAL = dict(weight=3,
-                    names=['ontology:child', 'ontology:currentPartner', 'property:father', 'ontology:formerPartner',
-                           'property:heir', 'property:mother', 'ontology:parent', 'ontology:partner',
-                           'ontology:relation',
+                    names=['ontology:currentPartner', 'property:father', 'ontology:formerPartner',
+                           'property:mother', 'ontology:partner', 'ontology:relation',
                            'ontology:relative', 'property:sibling', 'ontology:spouse'])
+    HERITAGE = dict(weight=3,
+                    names=['property:heir', 'ontology:child', 'ontology:parent', 'ontology:successor',
+                           'ontology:predecessor'])
+    LEADERSHIP = dict(weight=3,
+                      names=['ontology:primeMinister', 'ontology:vicePresident', 'ontology:vicePrimeMinister',
+                             'property:chairman', 'property:leader', 'ontology:chancellor', 'ontology:monarch'])
     OTHER = dict(weight=3,
                  names=[])
 
@@ -31,4 +35,3 @@ class Relation(Enum):
 
     def get_weight(self):
         return self._value_['weight']
-

@@ -2,7 +2,7 @@ import networkx as nx
 from matplotlib import pylab as pl
 from networkx.drawing.nx_agraph import graphviz_layout
 
-from src.analysis.graph.builder import GraphBuilder
+from src.analysis.graph.builder import SimpleGraph
 from src.analysis.graph.centrality import CentralityMeasurer
 
 
@@ -30,7 +30,7 @@ class GraphDrawer:
                 if len(test[node]) > 1:
                     print(test[node])
 
-        graph = GraphBuilder(db, nodes=node_group.keys()).build()
+        graph = SimpleGraph(db, nodes=node_group.keys()).get()
         centrality = nx.degree_centrality(graph)
         ranking = dict(CentralityMeasurer.create_ranking(centrality))
 

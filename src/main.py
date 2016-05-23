@@ -1,5 +1,5 @@
 from src.analysis.basic.statistics import Statistics
-from src.analysis.graph.builder import GraphBuilder
+from src.analysis.graph.builder import SimpleGraph
 from src.analysis.graph.centrality import CentralityMeasurer
 # from src.analysis.graph.groups import GroupsFinder
 from src.analysis.graph.groups import GroupsFinder
@@ -10,6 +10,8 @@ from src.visualisation.Plotter import Plotter
 
 def draw_relation_plot(plotter, statistics):
     data = [(Relation.POLITICS.name, statistics.count_relations_by_type(Relation.POLITICS.name)),
+            (Relation.HERITAGE.name, statistics.count_relations_by_type(Relation.HERITAGE.name)),
+            (Relation.LEADERSHIP.name, statistics.count_relations_by_type(Relation.LEADERSHIP.name)),
             (Relation.SCHOOLING.name, statistics.count_relations_by_type(Relation.SCHOOLING.name)),
             (Relation.COLLABORATION.name, statistics.count_relations_by_type(Relation.COLLABORATION.name)),
             (Relation.PERSONAL.name, statistics.count_relations_by_type(Relation.PERSONAL.name)),
@@ -25,7 +27,7 @@ def draw_type_plot(plotter, statistics):
 
 def draw_person_by_age_plot(plotter, statistics):
     data = statistics.count_persons_by_ages()
-    plotter.bar_plot('Ages', 'Age', 'Count', data)
+    plotter.bar_plot('Centuries', 'Century', 'Count', data)
 
 
 def draw_all_plots(statistics):
@@ -54,7 +56,7 @@ def main():
     # print_and_draw_statistics(db)
 
     print("Building graph...")
-    graph = GraphBuilder(db).build()
+    graph = SimpleGraph(db, since=1939, to=1945).get()
     print("Finished building graph")
     cpm_groups = GroupsFinder(graph).find_groups_cpm(8)
     louvain_groups = GroupsFinder(graph).find_groups_louvain()
