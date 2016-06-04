@@ -42,7 +42,7 @@ def print_and_draw_statistics(db):
     print("Starting statistics...")
     statistics = Statistics(db)
     statistics.print_all()
-    draw_all_plots(statistics)
+    # draw_all_plots(statistics)
     print("Finished statistics...")
 
 
