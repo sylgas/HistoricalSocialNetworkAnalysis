@@ -26,10 +26,23 @@ class GroupsFinder:
             if all:
                 print(groups)
 
-    def print_groups_cpm(self, klist, all=False):
+    def print_groups_cpm(self, klist, all=False, db=None):
         for k in klist:
             groups = list(self.find_groups_cpm(k))
-            print(str(k) + '\t' + str(len(groups)))
+            count = len(groups)
+            print(str(k) + '\t' + str(count))
+            # group_counts = dict(map(lambda node: (node, len(list(node))), groups))
+            # counts = dict(Counter(group_counts.values()))
+            # sorted_counts = collections.OrderedDict(sorted(counts.items()))
+            # print(sorted_counts)
+            # sum_density = 0
+            # for group in groups:
+            #     print('grupa ' + str(len(group)))
+            #     g = SimpleGraph(db, nodes=group).get()
+            #     print('graf' + str(len(g)))
+            #     density = nx.bipartite.density(g, group)
+            #     sum_density += density
+            # print(str(sum_density/count))
             if all:
                 print(groups)
 

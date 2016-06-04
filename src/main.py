@@ -6,6 +6,7 @@ from src.analysis.graph.groups import GroupsFinder
 from src.common.db.connector import DatabaseConnector
 from src.common.enums import Relation
 from src.visualisation.Plotter import Plotter
+from src.visualisation.graph import GraphDrawer
 
 
 def draw_relation_plot(plotter, statistics):
@@ -53,17 +54,17 @@ def print_centralities(graph):
 def main():
     print("Starting...")
     db = DatabaseConnector('localhost', 27017, 'historical-relations')
-    # print_and_draw_statistics(db)
+    print_and_draw_statistics(db)
 
     print("Building graph...")
-    graph = SimpleGraph(db, since=1939, to=1945).get()
+    graph = SimpleGraph(db).get()
     print("Finished building graph")
     cpm_groups = GroupsFinder(graph).find_groups_cpm(8)
     louvain_groups = GroupsFinder(graph).find_groups_louvain()
 
-    # drawer = GraphDrawer()
-    # drawer.draw(graph)
-    # drawer.draw_groups(db, groups)
+    drawer = GraphDrawer()
+    drawer.draw(graph)
+    drawer.draw_groups(graph, cpm_groups)
 
     print("Finished...")
 

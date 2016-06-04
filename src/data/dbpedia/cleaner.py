@@ -26,6 +26,25 @@ class DatePersonCleaner(Cleaner):
         self.__fill_empty_years_fields()
 
 
+class NameCleaner(Cleaner):
+    def clean(self):
+        self.__clean_names_from_person()
+        self.__clean_names_from_relations('to_name')
+        self.__clean_names_from_relations('from_name')
+
+    def __clean_names_from_relations(self, field):
+        cursor = self.db.find_all_relations({field: {'$regex': '"'}})
+        for relation in cursor:
+            relation[field] = relation[field].replace('\"', '?')
+            self.db.save_relation(relation)
+
+    def __clean_names_from_person(self):
+        cursor = self.db.find_all_persons({'name': {'$regex': '"'}})
+        for person in cursor:
+            person['name'] = person['name'].replace('\"', '?')
+            self.db.save_person(person)
+
+
 class RelationCleaner(Cleaner):
     def clean(self):
         cursor = self.db.find_all_relations()

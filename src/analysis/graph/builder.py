@@ -16,6 +16,9 @@ class Graph:
     def get_nodes(self):
         return self.nodes
 
+    def subgraph(self, nbunch):
+        return self.graph.subgraph(nbunch)
+
     def __build(self):
         graph = nx.Graph()
         self._add_edges(graph)
@@ -36,7 +39,7 @@ class SimpleGraph(Graph):
 
     def _add_edges(self, graph):
         for relation in self.db.find_relations_for(self.nodes):
-            graph.add_edge(relation['from'], relation['to'], {'name': relation['type']})
+            graph.add_edge(relation['from_name'], relation['to_name'], {'name': relation['type']})
 
 
 class AnalyticalGraph(Graph):

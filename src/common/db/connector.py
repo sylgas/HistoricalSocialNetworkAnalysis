@@ -92,7 +92,7 @@ class DatabaseConnector:
         return self.find_all_persons({'hasRelation': True})
 
     def find_relations_for(self, urls):
-        return self.relations.find({'$or': [
+        return self.relations.find({'$and': [
             {'to': {'$in': urls}},
             {'from': {'$in': urls}}
         ]})
@@ -117,6 +117,9 @@ class DatabaseConnector:
 
     def save_person(self, person):
         self.persons.save(person)
+
+    def save_relation(self, relation):
+        self.relations.save(relation)
 
     def find_distinct_person_types(self):
         # return self.persons.aggregate([{'$group': {'_id': '$type'}}], allowDiskUse=True)

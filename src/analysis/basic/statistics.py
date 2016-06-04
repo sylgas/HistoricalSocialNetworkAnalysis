@@ -14,7 +14,7 @@ class Statistics:
         FunctionPrinter.print_statistic(self.count_persons_with_ideology)
         FunctionPrinter.print_statistic(self.count_persons_with_nationality)
         FunctionPrinter.print_statistic(self.count_persons_with_role)
-        # self.print_count_persons_by_type_statistic()
+        self.print_count_persons_by_type_statistic()
         FunctionPrinter.print_statistic(self.count_persons_with_relations)
         FunctionPrinter.print_statistic(self.count_relations)
         self.print_count_relations_by_type_statistic()

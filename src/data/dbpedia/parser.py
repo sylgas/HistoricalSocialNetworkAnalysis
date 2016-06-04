@@ -7,6 +7,7 @@ from src.common.helper import TypeHelper
 
 class Parser(object):
     RESOURCE_REGEXES = [r'http://dbpedia\.org/resource/(?P<value>[^\(\)]*)(\(.*\))*',
+                        r'http://dbpedia\.org/ontology/(?P<value>[^\(\)]*)(\(.*\))*',
                         r'"“*(?P<value>.*[^“”"])”*"@.+',
                         r'(?P<value>.*)']
 
@@ -25,6 +26,15 @@ class Parser(object):
         for attribute in attributes:
             if attribute in element:
                 return element[attribute]['value']
+        return ''
+
+    @staticmethod
+    def extract_first_attribute_string(element, *attributes):
+        for attribute in attributes:
+            if attribute in element:
+                value = element[attribute]
+                if len(value) != 0:
+                    return Parser.__extract_string_value(value)
         return ''
 
     @staticmethod
@@ -162,6 +172,23 @@ class RedirectParser(RelationParser):
                         self.db.insert_relation(relation)
 
 
+class NamedRelationParser(Parser):
+    def parse(self):
+        self.name_field('to')
+        self.name_field('from')
+
+    def name_field(self, field):
+        named_field = field + '_name'
+        cursor = self.db.find_all_relations({named_field: {'$exists': False}}).distinct(field)
+        for url in cursor:
+            person = self.db.find_one_person({'url': url})
+            relations = self.db.find_all_relations({field: url})
+            name = self.extract_first_attribute_string(person, 'name', 'url')
+            for relation in relations:
+                relation[named_field] = name
+                self.db.save_relation(relation)
+
+
 class HasRelationParser(Parser):
     def parse(self):
         relations = self.db.find_all_relations()
@@ -198,3 +225,10 @@ class TypeParser(Parser):
     def update_type(self, person, new_type):
         person['type'] = new_type
         self.db.save_person(person)
+
+    def parse_incorrect_types(self):
+        cursor = self.db.find_all_persons({'type.type': {'$exists': True}})
+        for person in cursor:
+            person['type'] = person['type']['type']['value']
+            person['type'] = self.extract_first_attribute_string(person, 'type')
+            self.db.save_person(person)

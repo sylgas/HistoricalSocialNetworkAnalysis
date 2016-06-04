@@ -19,14 +19,14 @@ def print_centralities(graph):
 def main():
     print("Starting...")
     db = DatabaseConnector('localhost', 27017, 'historical-relations')
-    print_statistics(db)
+    # print_statistics(db)
 
     print("Building graph...")
-    graph = SimpleGraph(db, since=1939, to=1945).get()
+    graph = SimpleGraph(db).get()
     print("Finished building graph")
     # print_centralities(graph)
-    # GroupsFinder(graph).print_groups_cpm(range(2, 13))
-    GroupsFinder(graph).print_groups_louvain([0.0002, 1.0, 200.0])
+    GroupsFinder(graph).print_groups_cpm(range(3, 13), db=db)
+    # GroupsFinder(graph).print_groups_louvain([0.0002, 1.0, 200.0])
 
     print("Finished...")
 

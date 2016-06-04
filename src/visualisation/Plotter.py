@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 # line:     list of further values to be presented on plot
 # bar:      list of tuple (label, value)
 # legend:   list of string
+from src import BASE_DIR
+
+
 class Plotter:
     def line_plot(self, title, x_label, y_label, line):
         fig, ax1 = plt.subplots()
@@ -79,7 +82,7 @@ class Plotter:
 
     @staticmethod
     def __save_plot(title):
-        plt.savefig('plot/{0}.png'.format(title), bbox_inches='tight')
+        plt.savefig(BASE_DIR + '/plot/{0}.png'.format(title), bbox_inches='tight')
         plt.close()
 
     @staticmethod

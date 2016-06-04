@@ -45,4 +45,4 @@ class CentralityMeasurer:
     @staticmethod
     def create_ranking(results):
         sorted_results = sorted(results.items(), key=operator.itemgetter(1), reverse=True)
-        return sorted_results[0: 10]
+        return sorted_results[0: 50]
