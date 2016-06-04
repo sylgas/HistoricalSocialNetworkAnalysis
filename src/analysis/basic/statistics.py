@@ -16,7 +16,7 @@ class Statistics:
         FunctionPrinter.print_statistic(self.count_persons_with_ideology)
         FunctionPrinter.print_statistic(self.count_persons_with_nationality)
         FunctionPrinter.print_statistic(self.count_persons_with_role)
-        self.print_count_persons_by_type_statistic()
+        # self.print_count_persons_by_type_statistic()
         FunctionPrinter.print_statistic(self.count_persons_with_relations)
         FunctionPrinter.print_statistic(self.count_relations)
         self.print_count_relations_by_type_statistic()
@@ -73,8 +73,8 @@ class Statistics:
         res = self.db.count_all_persons({'$or': [
             {'url': {'$exists': False}},
             {'url': ''},
-            # {'type': {'$exists': False}},
-            # {'type': ''},
+            {'type': {'$exists': False}},
+            {'type': ''},
             {'firstYearOfActivity': {'$exists': False}},
             {'firstYearOfActivity': ''},
             {'lastYearOfActivity': {'$exists': False}},

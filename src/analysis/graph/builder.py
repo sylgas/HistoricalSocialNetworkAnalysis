@@ -30,6 +30,8 @@ class Graph:
 
 class SimpleGraph(Graph):
     def build_nodes(self, since, to):
+        if since is None and to is None:
+            return self.db.find_persons_with_relations().distinct('url')
         return self.db.find_persons_in_period_with_relations(since, to).distinct('url')
 
     def add_edges(self, graph):

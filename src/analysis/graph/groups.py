@@ -5,14 +5,33 @@ import networkx as nx
 
 
 class GroupsFinder:
+    LOUVAIN_GROUP_MIN_SIZE = 3
+
     def __init__(self, graph):
         self.graph = graph
 
     def find_groups_cpm(self, min_k):
         return nx.k_clique_communities(self.graph, min_k)
 
-    def find_groups_louvain(self):
-        return louvain.best_partition(self.graph)
+    def find_groups_louvain(self, res=1):
+        return louvain.best_partition(self.graph, resolution=res)
+
+    def print_groups_louvain(self, resolution_list, all=False):
+        for resolution in resolution_list:
+            node_to_id = self.find_groups_louvain(res=resolution)
+            group_ids = set(map(lambda node: node_to_id[node], node_to_id))
+            groups = [[node for node in node_to_id if node_to_id[node] == group_id] for group_id in group_ids]
+            groups = list(filter(lambda x: len(x) >= GroupsFinder.LOUVAIN_GROUP_MIN_SIZE, groups))
+            print(str(resolution) + '\t' + str(len(groups)))
+            if all:
+                print(groups)
+
+    def print_groups_cpm(self, klist, all=False):
+        for k in klist:
+            groups = list(self.find_groups_cpm(k))
+            print(str(k) + '\t' + str(len(groups)))
+            if all:
+                print(groups)
 
 
 class GroupComparator:

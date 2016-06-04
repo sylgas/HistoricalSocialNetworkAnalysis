@@ -26,7 +26,7 @@ class Plotter:
     def bar_plot(self, title, x_label, y_label, bars):
         fig, ax1 = plt.subplots()
         ax1.bar([i for i in range(len(bars))], [b[1] for b in bars], 1.)
-        plt.xticks([i+1/2. for i in range(len(bars))], [b[0] for b in bars], rotation='vertical')
+        plt.xticks([i + 1 / 2. for i in range(len(bars))], [b[0] for b in bars], rotation='vertical')
         ax1.set_title(title)
         ax1.set_xlabel(x_label)
         ax1.set_ylabel(y_label)

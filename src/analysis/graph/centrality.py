@@ -18,16 +18,16 @@ class CentralityMeasurer:
 
     def degree_centrality_ranking(self):
         res = nx.degree_centrality(self.graph)
-        return self.__create_ranking(res)
+        return self.create_ranking(res)
 
     def betweeness_centrality_ranking(self):
         # results = nx.betweenness_centrality(self.graph, k=200)
         results = nx.betweenness_centrality(self.graph)
-        return self.__create_ranking(results)
+        return self.create_ranking(results)
 
     def closeness_centrality_ranking(self):
         results = nx.closeness_centrality(self.graph)
-        return self.__create_ranking(results)
+        return self.create_ranking(results)
 
     def eigenvector_centrality_ranking(self):
         try:
@@ -36,13 +36,13 @@ class CentralityMeasurer:
             print('Eigenvector error')
             results = {}
 
-        return self.__create_ranking(results)
+        return self.create_ranking(results)
 
     def page_rank_ranking(self):
         results = nx.pagerank(self.graph)
-        return self.__create_ranking(results)
+        return self.create_ranking(results)
 
     @staticmethod
-    def __create_ranking(results):
+    def create_ranking(results):
         sorted_results = sorted(results.items(), key=operator.itemgetter(1), reverse=True)
         return sorted_results[0: 10]

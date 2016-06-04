@@ -29,6 +29,9 @@ def main():
     # finder = GroupsFinder(graph)
     # print(finder.find_groups_cpm(5))
     # print("Finished...")
+    # GroupsFinder(graph).print_groups_cpm(range(2, 13))
+
+    print("Finished...")
 
 
 if __name__ == '__main__':

@@ -67,8 +67,8 @@ class DatabaseConnector:
     def find_all_raw_roles(self):
         return self.raw_roles.find()
 
-    def find_all_raw_types(self):
-        return self.raw_types.find()
+    def find_all_raw_types(self, query={}):
+        return self.raw_types.find(query)
 
     def find_all_raw_relations(self):
         return self.raw_relations.find(no_cursor_timeout=True)
@@ -87,6 +87,9 @@ class DatabaseConnector:
                 {'$and': [{'lastYearOfActivity': {'$gte': since}}, {'lastYearOfActivity': {'$lte': to}}]}
             ]}
         ]})
+
+    def find_persons_with_relations(self):
+        return self.find_all_persons({'hasRelation': True})
 
     def find_relations_for(self, urls):
         return self.relations.find({'$and': [
