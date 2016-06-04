@@ -1,5 +1,7 @@
 import networkx as nx
 
+from src import BASE_DIR
+
 
 class Graph:
     def __init__(self, db, nodes=None, since=None, to=None):
@@ -18,6 +20,14 @@ class Graph:
 
     def subgraph(self, nbunch):
         return self.graph.subgraph(nbunch)
+
+    def export(self, filename):
+        f = open(BASE_DIR + '/export/' + filename, 'w', encoding='utf-8')
+        f.write('Source\tTarget\tLabel\n')
+        for from_edge, to_edge in self.graph.edges():
+            data = self.graph.get_edge_data(from_edge, to_edge)
+            f.write(from_edge + '\t' + to_edge + '\t' + data['name'] + '\n')
+        f.close()
 
     def __build(self):
         graph = nx.Graph()
