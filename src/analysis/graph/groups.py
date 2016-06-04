@@ -16,11 +16,30 @@ class GroupsFinder:
 
 
 class GroupComparator:
-    def __init__(self, graph, old_groups, new_groups):
-        for og in old_groups:
-            for ng in new_groups:
-                pass
+    def __init__(self, old_graph, old_groups, new_graph, new_groups):
+        self.old_profiles = self.__find_profiles(old_graph, old_groups)
+        self.new_profiles = self.__find_profiles(new_graph, new_groups)
+        self.similar_groups = self.__find_similar_groups()
 
+    def get_similar_group(self):
+        return self.similar_groups
+
+    @staticmethod
+    def __find_profiles(graph, groups):
+        result = []
+        for g in groups:
+            result.append((g, Profile(g, graph)))
+        return result
+
+    def __find_similar_groups(self):
+        result = []
+        for op in self.old_profiles:
+            for np in self.new_profiles:
+                pc = ProfileComparator(op[1], np[1])
+                similarity = pc.get_similarity_factor()
+                if similarity > 0:
+                    result.append((op, np, similarity, pc.get_differences()))
+        return sorted(result, key=lambda x: x[2], reverse=True)
 
 
 class Profile:
@@ -56,21 +75,27 @@ class Profile:
             result[url] += self.graph.get_eigenvector_centrality()[url]
             result[url] += self.graph.get_page_rank()[url]
         sorted_results = sorted(result.items(), key=operator.itemgetter(1), reverse=True)
-        return self.nodes[sorted_results[0][0]]
+        return self.graph.get_nodes()[sorted_results[0][0]]
 
     def __find_type(self):
         types = {}
-        for url in self.nodes():
+        for url in self.nodes:
             person = self.graph.get_nodes()[url]
+            # todo: usunac po przeparsowniu typow
+            if isinstance(person['type'], dict):
+                continue
             if person['type'] not in types:
                 types[person['type']] = 0
             types[person['type']] += 1
         sorted_results = sorted(types.items(), key=operator.itemgetter(1), reverse=True)
+        # todo: usunac po przeparsowniu typow
+        if len(sorted_results) == 0:
+            return ''
         return sorted_results[0][0]
 
     def __find_nationality(self):
         nationalities = {}
-        for url in self.nodes():
+        for url in self.nodes:
             person = self.graph.get_nodes()[url]
             nationality = person['nationality']
             if nationality is '':
@@ -111,7 +136,7 @@ class ProfileComparator:
         self.new_profile = new_profile
         old_nodes = old_profile.get_nodes()
         new_nodes = new_profile.get_nodes()
-        self.all_nodes_count = len(set(old_nodes + new_nodes))
+        self.all_nodes_count = len(old_nodes) + len(new_nodes)
         self.common = list(set(old_nodes).intersection(new_nodes))
         self.only_old = [n for n in old_nodes if n not in self.common]
         self.only_new = [n for n in new_nodes if n not in self.common]
@@ -126,14 +151,14 @@ class ProfileComparator:
 
     def __find_differences(self):
         return {
-            'count': self.old_profile.get['count'] - self.new_profile.get['count'],
-            'top_person': (self.old_profile.get['top_person'], self.new_profile.get['top_person']),
-            'type': (self.old_profile.get['type'], self.new_profile.get['type']),
-            'nationality': (self.old_profile.get['nationality'], self.new_profile.get['nationality']),
-            'degree_centrality': self.old_profile.get['degree_centrality'] - self.new_profile.get['degree_centrality'],
-            'betweeness_centrality': self.old_profile.get['betweeness_centrality'] - self.new_profile.get['betweeness_centrality'],
-            'closeness_centrality': self.old_profile.get['closeness_centrality'] - self.new_profile.get['closeness_centrality'],
-            'eigenvector_centrality': self.old_profile.get['eigenvector_centrality'] - self.new_profile.get['eigenvector_centrality'],
-            'page_rank': self.old_profile.get['page_rank'] - self.new_profile.get['page_rank'],
+            'count': self.old_profile.get()['count'] - self.new_profile.get()['count'],
+            'top_person': (self.old_profile.get()['top_person'], self.new_profile.get()['top_person']),
+            'type': (self.old_profile.get()['type'], self.new_profile.get()['type']),
+            'nationality': (self.old_profile.get()['nationality'], self.new_profile.get()['nationality']),
+            'degree_centrality': self.old_profile.get()['degree_centrality'] - self.new_profile.get()['degree_centrality'],
+            'betweeness_centrality': self.old_profile.get()['betweeness_centrality'] - self.new_profile.get()['betweeness_centrality'],
+            'closeness_centrality': self.old_profile.get()['closeness_centrality'] - self.new_profile.get()['closeness_centrality'],
+            'eigenvector_centrality': self.old_profile.get()['eigenvector_centrality'] - self.new_profile.get()['eigenvector_centrality'],
+            'page_rank': self.old_profile.get()['page_rank'] - self.new_profile.get()['page_rank'],
         }
 

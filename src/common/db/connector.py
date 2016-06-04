@@ -89,7 +89,7 @@ class DatabaseConnector:
         ]})
 
     def find_relations_for(self, urls):
-        return self.relations.find({'$or': [
+        return self.relations.find({'$and': [
             {'to': {'$in': urls}},
             {'from': {'$in': urls}}
         ]})

@@ -1,3 +1,5 @@
+import operator
+
 from src.analysis.printer import FunctionPrinter
 from src.common.enums import Relation
 from src.common.helper import TypeHelper
@@ -108,3 +110,28 @@ class Statistics:
             ('XV', data[6]), ('XVI', data[7]), ('XVII', data[8]), ('XVIII', data[9]), ('XIX', data[10]),
             ('XX', data[11]), ('XXI', data[12])
         ]
+
+
+class GraphStatistics:
+    def __init__(self, graph):
+        self.graph = graph
+
+    def count(self):
+        return len(self.graph.get_nodes())
+
+    def count_persons_types(self):
+        types = {}
+        for url, person in self.graph.get_nodes().iteritems():
+            if person['type'] not in types:
+                types[person['type']] = 0
+            types[person['type']] += 1
+        return sorted(types, key=operator.itemgetter(1), reverse=True)
+
+    def count_relation_types(self):
+        types = {}
+        for relation in self.graph.get_relations():
+            if relation['type'] not in types:
+                types[relation['type']] = 0
+            types[relation['type']] += 1
+        return sorted(types, key=operator.itemgetter(1), reverse=True)
+

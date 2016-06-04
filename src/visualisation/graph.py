@@ -1,7 +1,7 @@
 import networkx as nx
 from matplotlib import pylab as pl
 
-from src.analysis.graph.builder import GraphBuilder
+from src.analysis.graph.builder import SimpleGraph
 
 
 class GraphDrawer:
@@ -22,7 +22,7 @@ class GraphDrawer:
             for node in group:
                 node_group[node] = index
 
-        graph = GraphBuilder(db, nodes=node_group.keys()).build()
+        graph = SimpleGraph(db, nodes=node_group.keys()).get()
 
         node_groups_values = set(node_group.values())
         r = 1 / len(node_groups_values)

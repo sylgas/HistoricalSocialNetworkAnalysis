@@ -5,7 +5,7 @@ class Graph:
     def __init__(self, db, nodes=None, since=None, to=None):
         self.db = db
         if nodes is None:
-            self.nodes = self.__build_nodes(since, to)
+            self.nodes = self.build_nodes(since, to)
         else:
             self.nodes = list(nodes)
         self.graph = self.__build()
@@ -18,33 +18,38 @@ class Graph:
 
     def __build(self):
         graph = nx.Graph()
-        self.__add_edges(graph)
+        self.add_edges(graph)
         return graph
 
-    def __add_edges(self, graph):
+    def add_edges(self, graph):
         raise NotImplementedError("Should have implemented this")
 
-    def __build_nodes(self, since, to):
+    def build_nodes(self, since, to):
         raise NotImplementedError("Should have implemented this")
 
 
 class SimpleGraph(Graph):
-    def __build_nodes(self, since, to):
+    def build_nodes(self, since, to):
         return self.db.find_persons_in_period_with_relations(since, to).distinct('url')
 
-    def __add_edges(self, graph):
+    def add_edges(self, graph):
         for relation in self.db.find_relations_for(self.nodes):
             graph.add_edge(relation['from'], relation['to'], {'name': relation['type']})
 
 
 class AnalyticalGraph(Graph):
     def __init__(self, db, since=None, to=None):
-        super(AnalyticalGraph, self).__init__(db, nodes=None, since=since, to=to)
         self.relations = []
+        super(AnalyticalGraph, self).__init__(db, nodes=None, since=since, to=to)
+        print("Counting degree")
         self.degree_centrality = nx.degree_centrality(self.graph)
-        self.betweeness_centrality = nx.betweenness_centrality(self.graph)
+        print("Counting betweeness")
+        self.betweeness_centrality = nx.betweenness_centrality(self.graph, k=10)
+        print("Counting closeness")
         self.closeness_centrality = nx.closeness_centrality(self.graph)
+        print("Counting eigenvector")
         self.eigenvector_centrality = nx.eigenvector_centrality(self.graph)
+        print("Counting page rank")
         self.page_rank = nx.pagerank(self.graph)
 
     def get_relations(self):
@@ -65,12 +70,12 @@ class AnalyticalGraph(Graph):
     def get_page_rank(self):
         return self.page_rank
 
-    def __add_edges(self, graph):
-        for relation in self.db.find_relations_for(self.nodes.keys()):
+    def add_edges(self, graph):
+        for relation in self.db.find_relations_for(list(self.nodes.keys())):
             graph.add_edge(relation['from'], relation['to'], {'name': relation['type']})
             self.relations.append(relation)
 
-    def __build_nodes(self, since, to):
+    def build_nodes(self, since, to):
         nodes = {}
         for person in self.db.find_persons_in_period_with_relations(since, to):
             nodes[person['url']] = person
