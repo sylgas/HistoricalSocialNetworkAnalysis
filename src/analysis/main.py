@@ -20,7 +20,7 @@ def main():
     db = DatabaseConnector('localhost', 27017, 'historical-relations')
     # print_statistics(db)
 
-    pc = PeriodComparator(db, 1939, 1945, 1958)
+    pc = PeriodComparator(db, 1800, 1830, 1860)
     pc.save_similar_groups("../plot/similarity.txt")
 
     # print("Building graph...")

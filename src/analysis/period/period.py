@@ -17,18 +17,18 @@ class PeriodComparator:
         return GroupsFinder(graph.get()).find_groups_cpm(3)
 
     def save_similar_groups(self, filename):
-        with open(filename, 'w') as file:
+        with open(filename, 'w', encoding='UTF-8') as file:
             for comparation in self.similar_groups:
                 file.write("Similarity ratio: {0}\n".format(comparation[2]))
-                file.write("Group in {0} - {1}\n".format(self.dates[0], self.dates[1]))
-                for person in comparation[0].get_nodes():
-                    file.write(person)
-                    file.write("\n")
-                file.write("Group in {0} - {1}\n".format(self.dates[1], self.dates[2]))
-                for person in comparation[1].get_nodes():
-                    file.write(person)
-                    file.write("\n")
-                file.write("\n")
+                # file.write("Group in {0} - {1}\n".format(self.dates[0], self.dates[1]))
+                # for person in comparation[0].get_nodes():
+                #     file.write(person)
+                #     file.write("\n")
+                # file.write("Group in {0} - {1}\n".format(self.dates[1], self.dates[2]))
+                # for person in comparation[1].get_nodes():
+                #     file.write(person)
+                #     file.write("\n")
+                # file.write("\n")
                 file.write("Profile 1.\n")
                 file.write("Count: {0}\n".format(comparation[0].get()['count']))
                 file.write("Top person: {0}\n".format(comparation[0].get()['top_person']['url']))
