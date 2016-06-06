@@ -70,7 +70,7 @@ class GroupComparator:
                 pc = ProfileComparator(op[1], np[1])
                 similarity = pc.get_similarity_factor()
                 if similarity > 0:
-                    result.append((op, np, similarity, pc.get_differences()))
+                    result.append((op[1], np[1], similarity, pc.get_differences()))
         return sorted(result, key=lambda x: x[2], reverse=True)
 
 
@@ -183,14 +183,14 @@ class ProfileComparator:
 
     def __find_differences(self):
         return {
-            'count': self.old_profile.get()['count'] - self.new_profile.get()['count'],
+            'count': self.new_profile.get()['count'] - self.old_profile.get()['count'],
             'top_person': (self.old_profile.get()['top_person'], self.new_profile.get()['top_person']),
             'type': (self.old_profile.get()['type'], self.new_profile.get()['type']),
             'nationality': (self.old_profile.get()['nationality'], self.new_profile.get()['nationality']),
-            'degree_centrality': self.old_profile.get()['degree_centrality'] - self.new_profile.get()['degree_centrality'],
-            'betweeness_centrality': self.old_profile.get()['betweeness_centrality'] - self.new_profile.get()['betweeness_centrality'],
-            'closeness_centrality': self.old_profile.get()['closeness_centrality'] - self.new_profile.get()['closeness_centrality'],
-            'eigenvector_centrality': self.old_profile.get()['eigenvector_centrality'] - self.new_profile.get()['eigenvector_centrality'],
-            'page_rank': self.old_profile.get()['page_rank'] - self.new_profile.get()['page_rank'],
+            'degree_centrality': self.new_profile.get()['degree_centrality'] - self.old_profile.get()['degree_centrality'],
+            'betweeness_centrality': self.new_profile.get()['betweeness_centrality'] - self.old_profile.get()['betweeness_centrality'],
+            'closeness_centrality': self.new_profile.get()['closeness_centrality'] - self.old_profile.get()['closeness_centrality'],
+            'eigenvector_centrality': self.new_profile.get()['eigenvector_centrality'] - self.old_profile.get()['eigenvector_centrality'],
+            'page_rank': self.new_profile.get()['page_rank'] - self.old_profile.get()['page_rank'],
         }
 
