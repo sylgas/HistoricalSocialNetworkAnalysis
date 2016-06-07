@@ -21,6 +21,7 @@ def main():
     # print_statistics(db)
 
     pc = PeriodComparator(db, 1800, 1830, 1860)
+    pc.save_basic_stat()
     pc.save_similar_groups("../plot/similarity.txt")
 
     # print("Building graph...")

@@ -1,20 +1,21 @@
+from src.analysis.basic.statistics import GraphStatistics
 from src.analysis.graph.builder import AnalyticalGraph
 from src.analysis.graph.groups import GroupsFinder, GroupComparator
+from src.visualisation.Plotter import Plotter
 
 
 class PeriodComparator:
     def __init__(self, db, start_date, section, end_date):
         self.dates = (start_date, section, end_date)
-        old_graph = AnalyticalGraph(db, since=start_date, to=section)
-        new_graph = AnalyticalGraph(db, since=section, to=end_date)
-        old_groups = self.__find_groups(old_graph)
-        new_groups = self.__find_groups(new_graph)
-        self.similar_groups = GroupComparator(old_graph, old_groups, new_graph, new_groups).get_similar_group()
-        print([z[2] for z in self.similar_groups])
+        self.old_graph = AnalyticalGraph(db, since=start_date, to=section)
+        self.new_graph = AnalyticalGraph(db, since=section, to=end_date)
+        old_groups = self.__find_groups(self.old_graph)
+        new_groups = self.__find_groups(self.new_graph)
+        self.similar_groups = GroupComparator(self.old_graph, old_groups, self.new_graph, new_groups).get_similar_group()
 
     @staticmethod
     def __find_groups(graph):
-        return GroupsFinder(graph.get()).find_groups_cpm(3)
+        return GroupsFinder(graph.get()).find_groups_cpm(4)
 
     def save_similar_groups(self, filename):
         with open(filename, 'w', encoding='UTF-8') as file:
@@ -62,4 +63,19 @@ class PeriodComparator:
                 file.write("Eigenvector centrality: {0}\n".format(comparation[3]['eigenvector_centrality']))
                 file.write("Page rank: {0}\n".format(comparation[3]['page_rank']))
                 file.write("************************************************\n\n")
+
+    def save_basic_stat(self):
+        plotter = Plotter()
+        ogs = GraphStatistics(self.old_graph)
+        print("OG count: " + str(ogs.count()))
+        plotter.bar_plot('1800 - 1830 Relations', 'Type', 'Count', ogs.count_relation_types())
+        plotter.bar_plot('1800 - 1830 Types', 'Type', 'Count', ogs.count_persons_types())
+
+        ngs = GraphStatistics(self.new_graph)
+        print("NG count: " + str(ngs.count()))
+        plotter.bar_plot('1830 - 1860 Relations', 'Type', 'Count', list(ngs.count_relation_types()))
+        plotter.bar_plot('1830 - 1860 Types', 'Type', 'Count', list(ngs.count_persons_types()))
+
+
+
 

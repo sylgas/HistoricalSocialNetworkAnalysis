@@ -1,5 +1,3 @@
-import operator
-
 from src.analysis.printer import FunctionPrinter
 from src.common.enums import Relation
 from src.common.helper import TypeHelper
@@ -121,11 +119,17 @@ class GraphStatistics:
 
     def count_persons_types(self):
         types = {}
-        for url, person in self.graph.get_nodes().iteritems():
+        for url, person in self.graph.get_nodes().items():
             if person['type'] not in types:
                 types[person['type']] = 0
             types[person['type']] += 1
-        return sorted(types, key=operator.itemgetter(1), reverse=True)
+        # keys = sorted(types, key=operator.itemgetter(1), reverse=True)
+        l = []
+        for k, v in types.items():
+            if k == 'Agent':
+                continue
+            l.append((k, v))
+        return l
 
     def count_relation_types(self):
         types = {}
@@ -133,5 +137,10 @@ class GraphStatistics:
             if relation['type'] not in types:
                 types[relation['type']] = 0
             types[relation['type']] += 1
-        return sorted(types, key=operator.itemgetter(1), reverse=True)
+        # keys = sorted(types, key=operator.itemgetter(1), reverse=True)
+        l = []
+        for k, v in types.items():
+            l.append((k, v))
+        return l
+
 
