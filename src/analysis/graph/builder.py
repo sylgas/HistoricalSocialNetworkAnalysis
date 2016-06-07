@@ -61,9 +61,9 @@ class AnalyticalGraph(Graph):
         print("Counting betweeness")
         self.betweeness_centrality = nx.betweenness_centrality(self.graph, k=10)
         print("Counting closeness")
-        self.closeness_centrality = nx.closeness_centrality(self.graph)
+        self.closeness_centrality = self.degree_centrality # nx.closeness_centrality(self.graph)
         print("Counting eigenvector")
-        self.eigenvector_centrality = nx.eigenvector_centrality(self.graph)
+        self.eigenvector_centrality = self.degree_centrality # nx.eigenvector_centrality(self.graph)
         print("Counting page rank")
         self.page_rank = nx.pagerank(self.graph)
 
