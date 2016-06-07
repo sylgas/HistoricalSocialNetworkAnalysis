@@ -14,14 +14,15 @@ class GroupsFinder:
         return nx.k_clique_communities(self.graph, min_k)
 
     def find_groups_louvain(self, res=1):
-        return louvain.best_partition(self.graph, resolution=res)
+        node_to_id = louvain.best_partition(self.graph, resolution=res)
+        group_ids = set(map(lambda node: node_to_id[node], node_to_id))
+        groups = [[node for node in node_to_id if node_to_id[node] == group_id] for group_id in group_ids]
+        groups = list(filter(lambda x: len(x) >= GroupsFinder.LOUVAIN_GROUP_MIN_SIZE, groups))
+        return groups
 
     def print_groups_louvain(self, resolution_list, all=False):
         for resolution in resolution_list:
-            node_to_id = self.find_groups_louvain(res=resolution)
-            group_ids = set(map(lambda node: node_to_id[node], node_to_id))
-            groups = [[node for node in node_to_id if node_to_id[node] == group_id] for group_id in group_ids]
-            groups = list(filter(lambda x: len(x) >= GroupsFinder.LOUVAIN_GROUP_MIN_SIZE, groups))
+            groups = self.find_groups_louvain(res=resolution)
             print(str(resolution) + '\t' + str(len(groups)))
             if all:
                 print(groups)

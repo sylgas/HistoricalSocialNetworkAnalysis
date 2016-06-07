@@ -59,7 +59,7 @@ def main():
     print("Building graph...")
     graph = SimpleGraph(db).get()
     print("Finished building graph")
-    cpm_groups = GroupsFinder(graph).find_groups_cpm(8)
+    cpm_groups = GroupsFinder(graph).find_groups_cpm(4)
     louvain_groups = GroupsFinder(graph).find_groups_louvain()
 
     drawer = GraphDrawer()

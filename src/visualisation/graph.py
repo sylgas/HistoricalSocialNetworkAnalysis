@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.cm as cmx
 import matplotlib.colors as colors
 import networkx as nx
@@ -32,19 +33,21 @@ class GraphDrawer:
         pylab.show()
 
     def draw_groups(self, graph, groups):
-        index = 0
+        matplotlib.rcParams.update({'font.size': 8})
+
         # {node: (float) groupId}
         node_group_list = self.__build_node_group_list(groups)
         color_group_index = self.__build_color_group_index(node_group_list)
 
         graph = graph.subgraph(node_group_list.keys())
-        centrality = nx.degree_centrality(graph)
+        measurer = CentralityMeasurer(graph)
+        centrality = measurer.sum_centrality()
         ranking = dict(CentralityMeasurer.create_ranking(centrality))
 
         values = [(color_group_index.get(node_group_list[node], 0.0)) for node in graph.nodes()]
         f = pylab.figure(1)
         ax = self.__build_ax_with_legend(f, values, color_group_index)
-        sizes = [v * 2000 for v in centrality.values()]
+        sizes = [centrality[node] * 400 for node in graph.nodes()]
         labels = {node: self.create_label(node, ranking) for node in graph.nodes()}
 
         pos = graphviz_layout(graph, prog=GraphDrawer.LAYOUT_PROG)
