@@ -42,7 +42,39 @@ class CentralityMeasurer:
         results = nx.pagerank(self.graph)
         return self.create_ranking(results)
 
+    def sum_centrality(self):
+        degree = nx.degree_centrality(self.graph)
+        betweeness = nx.betweenness_centrality(self.graph)
+        closeness = nx.closeness_centrality(self.graph)
+        eigenvector = nx.eigenvector_centrality(self.graph)
+        page_rank = nx.pagerank(self.graph)
+        centrality = dict()
+        for key in degree.keys():
+            centrality[key] = degree[key] + betweeness[key] + closeness[key] + eigenvector[key] + page_rank[key]
+        return centrality
+
+    def print_sum_centrality(self):
+        degree = nx.degree_centrality(self.graph)
+        self.print_ranking(degree)
+        betweeness = nx.betweenness_centrality(self.graph)
+        self.print_ranking(betweeness)
+        closeness = nx.closeness_centrality(self.graph)
+        self.print_ranking(closeness)
+        eigenvector = nx.eigenvector_centrality(self.graph)
+        self.print_ranking(eigenvector)
+        page_rank = nx.pagerank(self.graph)
+        self.print_ranking(page_rank)
+        centrality = dict()
+        for key in degree.keys():
+            centrality[key] = (degree[key] + betweeness[key] + closeness[key] + eigenvector[key] + page_rank[key]) / 5
+        self.print_ranking(centrality)
+        return centrality
+
+    def print_ranking(self, results):
+        ranking = self.create_ranking(results)
+        print(ranking)
+
     @staticmethod
     def create_ranking(results):
         sorted_results = sorted(results.items(), key=operator.itemgetter(1), reverse=True)
-        return sorted_results[0: 50]
+        return sorted_results[0: 20]
