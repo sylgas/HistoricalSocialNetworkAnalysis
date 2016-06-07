@@ -6,7 +6,7 @@
 
 `export` - katalog eksportu grafów do pliku .csv
 
-`plo`t - katalog, do którego zapisywane są wygenerowane wykresy
+`plot` - katalog, do którego zapisywane są wygenerowane wykresy
 
 `resources` - zawiera zastosowane zapytania SparQL do pobierania potrzebnych danych
 
